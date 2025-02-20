@@ -17,9 +17,9 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: 'Job Board MUN: Your Gateway to Opportunities',
+  title: 'Expense Tracker MUN: Your Personal Finance Assistant',
   description:
-    'Discover a wide range of job opportunities tailored for you. Join our community and take the next step in your career with Job Board MUN.',
+    'Expense Tracker MUN is a personal finance assistant that helps you track your expenses, manage your budget, and plan your financial future.',
 };
 
 export default function RootLayout({

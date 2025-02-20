@@ -13,7 +13,7 @@ export default async function Navbar() {
       <Link href="/" className="flex items-center gap-2">
         <Image src={Logo} alt="logo" width={50} height={50} />
         <h1 className="text-2xl font-bold">
-          Job
+          Expense Tracker
           <span className="text-primary"> MUN</span>
         </h1>
       </Link>

@@ -40,7 +40,7 @@ export default function OnboardingForm() {
       <div className="mb-10 flex items-center gap-4">
         <Image src={Logo} alt="Logo" height={50} width={50} />
         <h1 className="text-4xl font-bold">
-          Job
+          Expense Tracker
           <span className="text-primary"> MUN</span>
         </h1>
       </div>

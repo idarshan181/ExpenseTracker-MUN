@@ -1,7 +1,7 @@
 'use client';
 
 /* eslint-disable no-console */
-import { createCompany } from '@/app/actions';
+// import { createCompany } from '@/app/actions';
 import { countryList } from '@/app/utils/countriesList';
 import { companySchema } from '@/app/utils/zodSchemas';
 import { UploadDropzone } from '@/components/general/UploadThingsRe';
@@ -50,7 +50,8 @@ export default function CompanyForm() {
   async function onSubmit(data: z.infer<typeof companySchema>) {
     try {
       setPending(true);
-      await createCompany(data);
+      console.log(data);
+      // await createCompany(data);
     } catch (error) {
       if (error instanceof Error && error.message !== 'NEXT_REDIRECT') {
         console.error(error);

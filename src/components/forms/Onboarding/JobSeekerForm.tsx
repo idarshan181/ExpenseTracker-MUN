@@ -2,7 +2,7 @@
 
 'use client';
 
-import { createJobSeeker } from '@/app/actions';
+// import { createJobSeeker } from '@/app/actions';
 import { jobSeekerSchema } from '@/app/utils/zodSchemas';
 import { UploadDropzone } from '@/components/general/UploadThingsRe';
 import { Button } from '@/components/ui/button';
@@ -45,7 +45,7 @@ export default function JobSeekerForm() {
     console.log(data);
     try {
       setPending(true);
-      await createJobSeeker(data);
+      console.log(data);
     } catch (error) {
       if (error instanceof Error && error.message !== 'NEXT_REDIRECT') {
         console.error(error);
