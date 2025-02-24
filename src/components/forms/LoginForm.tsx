@@ -14,7 +14,7 @@ export default async function LoginForm() {
   const session = await auth();
 
   if (session?.user) {
-    return redirect('/');
+    return redirect('/dashboard');
   }
 
   return (
@@ -33,7 +33,7 @@ export default async function LoginForm() {
                 'use server';
 
                 await signIn('github', {
-                  redirectTo: '/',
+                  redirectTo: '/dashboard',
                 });
               }}
             >
@@ -52,7 +52,7 @@ export default async function LoginForm() {
                 'use server';
 
                 await signIn('google', {
-                  redirectTo: '/',
+                  redirectTo: '/dashboard',
                 });
               }}
             >
