@@ -41,14 +41,14 @@ export default function UserDropdown({ email, name, image }: iAppProps) {
         <DropdownMenuSeparator />
         <DropdownMenuGroup>
           <DropdownMenuItem asChild>
-            <Link href="/favourites">
+            <Link href="/budgets">
               <Heart size={16} strokeWidth={2} className="opacity-60" />
               <span>Budget</span>
             </Link>
           </DropdownMenuItem>
 
           <DropdownMenuItem asChild>
-            <Link href="/my-jobs">
+            <Link href="/">
               <Layers2 size={16} strokeWidth={2} className="opacity-60" />
               <span>My Expenses</span>
             </Link>

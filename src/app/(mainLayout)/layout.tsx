@@ -1,16 +1,10 @@
 /* eslint-disable unused-imports/no-unused-vars */
 import ClientSidebar from '@/components/general/ClientSidebar';
 import Navbar from '@/components/general/Navbar';
-import {
-  Sidebar,
-  SidebarProvider,
-} from '@/components/ui/sidebar';
-import {
-  BarChart,
-  Home,
-  Target,
-  Wallet,
-} from 'lucide-react';
+import { Sidebar, SidebarProvider } from '@/components/ui/sidebar';
+import { BarChart, Home, Target, Wallet } from 'lucide-react';
+import { SessionProvider } from 'next-auth/react';
+import { auth } from '../utils/auth';
 
 const sidebarItems = [
   { icon: Home, label: 'Dashboard', value: '/' },
@@ -19,16 +13,30 @@ const sidebarItems = [
   { icon: Target, label: 'Budgets', value: '/budgets' },
 ];
 
-export default function MainLayout({ children }: { children: React.ReactNode }) {
+export default async function MainLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
+  const session = await auth();
+
   return (
-    <SidebarProvider>
-      <Sidebar collapsible="icon">
-        <ClientSidebar />
-      </Sidebar>
-      <main className="w-full">
-        <Navbar />
-        {children}
-      </main>
-    </SidebarProvider>
+    <SessionProvider>
+      <SidebarProvider className="">
+        {session
+          ? (
+              <Sidebar collapsible="icon">
+                <ClientSidebar />
+              </Sidebar>
+            )
+          : null}
+        <main className="w-full">
+          <Navbar />
+          <div className="p-4">
+            {children}
+          </div>
+        </main>
+      </SidebarProvider>
+    </SessionProvider>
   );
 }

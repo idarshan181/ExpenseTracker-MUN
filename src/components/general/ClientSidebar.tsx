@@ -1,6 +1,6 @@
 /* eslint-disable no-console */
 'use client';
-
+import { sidebarItems } from '@/app/data/sidebar';
 import { Button } from '@/components/ui/button';
 import {
   SidebarContent,
@@ -13,22 +13,11 @@ import {
 } from '@/components/ui/sidebar';
 import { cn } from '@/lib/utils';
 import {
-  BarChart,
   ChevronLeft,
   ChevronRight,
-  Home,
-  Target,
-  Wallet,
 } from 'lucide-react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-
-const sidebarItems = [
-  { icon: Home, label: 'Dashboard', value: '/' },
-  { icon: Wallet, label: 'Transactions', value: '/transactions' },
-  { icon: BarChart, label: 'Reports & Insights', value: '/reports' },
-  { icon: Target, label: 'Budgets', value: '/budgets' },
-];
 
 export default function ClientSidebar() {
   const { state, toggleSidebar } = useSidebar();
@@ -49,6 +38,7 @@ export default function ClientSidebar() {
             >
               {state === 'collapsed' ? 'ET' : 'ExpenseTracker'}
             </h1>
+
           </div>
 
           <SidebarGroup>
@@ -59,10 +49,8 @@ export default function ClientSidebar() {
                     <SidebarMenuItem key={item.label}>
                       <SidebarMenuButton
                         asChild
-                        isActive={pathname === item.value}
-                        className={
-                          cn(pathname === item.value ? 'text-blue-600 font-bold' : '')
-                        }
+                        data-active={pathname === item.value}
+                        className="data-[active=true]:text-blue-600"
                       >
                         <Link
                           href={item.value}
@@ -88,7 +76,7 @@ export default function ClientSidebar() {
         <Button
           variant="link"
           onClick={() => toggleSidebar()}
-          className="flex items-center justify-center p-4 hover:bg-gray-100"
+          className="flex items-center justify-center p-4"
         >
           {state === 'collapsed'
             ? (
