@@ -1,7 +1,7 @@
 // src/app/utils/formatCurrency.ts
 
-export const formatCurrency = (currency: string = 'USD', amount: number): string => {
-  return new Intl.NumberFormat('en-US', {
+export const formatCurrency = (currency: string = 'CAD', amount: number): string => {
+  return new Intl.NumberFormat('en-CA', {
     style: 'currency',
     currency,
     maximumFractionDigits: 0,
