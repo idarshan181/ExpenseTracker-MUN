@@ -1,4 +1,4 @@
-// import { handleSignOut } from '@/app/actions';
+import { handleSignOut } from '@/app/actions';
 import { ChevronDown, Heart, Layers2, LogOut } from 'lucide-react';
 import Link from 'next/link';
 import { useMemo } from 'react';
@@ -56,7 +56,7 @@ export default function UserDropdown({ email, name, image }: iAppProps) {
         </DropdownMenuGroup>
         <DropdownMenuSeparator />
         <DropdownMenuItem>
-          <form>
+          <form action={handleSignOut}>
             <button type="submit" className="flex w-full items-center gap-2">
               <LogOut size={16} strokeWidth={2} className="opacity-60" />
               <span>Log out</span>

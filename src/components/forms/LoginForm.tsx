@@ -33,7 +33,7 @@ export default async function LoginForm() {
                 'use server';
 
                 await signIn('github', {
-                  redirectTo: '/onboarding',
+                  redirectTo: '/',
                 });
               }}
             >
@@ -52,7 +52,7 @@ export default async function LoginForm() {
                 'use server';
 
                 await signIn('google', {
-                  redirectTo: '/onboarding',
+                  redirectTo: '/',
                 });
               }}
             >

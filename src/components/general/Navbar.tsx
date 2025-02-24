@@ -20,9 +20,6 @@ export default async function Navbar() {
       {/* Desktop Navigation */}
       <div className="hidden items-center gap-5 md:flex">
         <ThemeToggle />
-        <Link href="/post-job" className={buttonVariants({ size: 'lg' })}>
-          Post Job
-        </Link>
         {session?.user
           ? (
               <UserDropdown
