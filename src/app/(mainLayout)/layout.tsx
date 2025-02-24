@@ -1,12 +1,34 @@
-import type { ReactNode } from 'react';
-
+/* eslint-disable unused-imports/no-unused-vars */
+import ClientSidebar from '@/components/general/ClientSidebar';
 import Navbar from '@/components/general/Navbar';
+import {
+  Sidebar,
+  SidebarProvider,
+} from '@/components/ui/sidebar';
+import {
+  BarChart,
+  Home,
+  Target,
+  Wallet,
+} from 'lucide-react';
 
-export default function MainLayout({ children }: { children: ReactNode }) {
+const sidebarItems = [
+  { icon: Home, label: 'Dashboard', value: '/' },
+  { icon: Wallet, label: 'Transactions', value: '/transactions' },
+  { icon: BarChart, label: 'Reports & Insights', value: '/reports' },
+  { icon: Target, label: 'Budgets', value: '/budgets' },
+];
+
+export default function MainLayout({ children }: { children: React.ReactNode }) {
   return (
-    <div className="mx-auto max-w-7xl px-4 md:px-6 lg:px-8">
-      <Navbar />
-      {children}
-    </div>
+    <SidebarProvider>
+      <Sidebar collapsible="icon">
+        <ClientSidebar />
+      </Sidebar>
+      <main className="w-full">
+        <Navbar />
+        {children}
+      </main>
+    </SidebarProvider>
   );
 }
