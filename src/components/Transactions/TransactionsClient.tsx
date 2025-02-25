@@ -7,8 +7,9 @@ import { Calendar } from '@/components/ui/calendar';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { cn } from '@/lib/utils';
 import { format } from 'date-fns';
-import { CalendarIcon, ChevronLeft, ChevronRight, CreditCard, Download, Filter, Pencil, Plus, Search, Trash2, WalletIcon } from 'lucide-react';
+import { CalendarIcon, CreditCard, Download, Filter, Pencil, Plus, Search, Trash2, WalletIcon } from 'lucide-react';
 import { useState } from 'react';
+import CustomPagination from '../general/CustomPagination';
 import { Card, CardContent } from '../ui/card';
 import { Input } from '../ui/input';
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from '../ui/select';
@@ -20,7 +21,7 @@ export default function TransactionsClient() {
   const [selectedCategory, setSelectedCategory] = useState('All');
   const [searchTerm, setSearchTerm] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 5;
+  const [rowsPerPage, setRowsPerPage] = useState(5);
 
   const filteredTransactions = transactions.filter((transaction) => {
     const matchesCategory = selectedCategory === 'All' || transaction.category === selectedCategory;
@@ -29,10 +30,10 @@ export default function TransactionsClient() {
     return matchesCategory && matchesSearch;
   });
 
-  const totalPages = Math.ceil(filteredTransactions.length / itemsPerPage);
+  const totalPages = Math.ceil(filteredTransactions.length / rowsPerPage);
   const currentTransactions = filteredTransactions.slice(
-    (currentPage - 1) * itemsPerPage,
-    currentPage * itemsPerPage,
+    (currentPage - 1) * rowsPerPage,
+    currentPage * rowsPerPage,
   );
 
   return (
@@ -189,48 +190,16 @@ export default function TransactionsClient() {
             </tbody>
           </table>
 
-          {/* Pagination */}
-          <div className="flex items-center justify-between border-t border-gray-200 px-4 py-3">
-            <div className="text-sm text-gray-500">
-              Showing
-              {' '}
-              {((currentPage - 1) * itemsPerPage) + 1}
-              {' '}
-              to
-              {' '}
-              {Math.min(currentPage * itemsPerPage, filteredTransactions.length)}
-              {' '}
-              of
-              {' '}
-              {filteredTransactions.length}
-              {' '}
-              transactions
-            </div>
-            <div className="flex items-center space-x-2">
-              <Button
-                variant="ghost"
-                onClick={() => setCurrentPage(prev => Math.max(1, prev - 1))}
-                disabled={currentPage === 1}
-                className="rounded p-2 hover:bg-gray-100 disabled:opacity-50"
-              >
-                <ChevronLeft className="size-5" />
-              </Button>
-              <span className="rounded border px-3 py-1">
-                {currentPage}
-                {' '}
-                /
-                {totalPages}
-              </span>
-              <Button
-                variant="ghost"
-                onClick={() => setCurrentPage(prev => Math.min(totalPages, prev + 1))}
-                disabled={currentPage === totalPages}
-                className="rounded p-2 hover:bg-gray-100 disabled:opacity-50"
-              >
-                <ChevronRight className="size-5" />
-              </Button>
-            </div>
+          <div className="flex items-center justify-end">
+            <CustomPagination
+              totalPages={totalPages}
+              currentPage={currentPage}
+              setCurrentPage={setCurrentPage}
+              rowsPerPage={rowsPerPage}
+              setRowsPerPage={setRowsPerPage}
+            />
           </div>
+
         </CardContent>
       </Card>
     </div>
