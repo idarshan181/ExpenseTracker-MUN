@@ -82,28 +82,49 @@ pnpm run dev
 ## 📁 Project Structure
 
 ```
-├── README.md
-├── package.json
 ├── prisma
 │   └── schema.prisma
+├── public/
+│   ├── logos/
+│   ├── screenshots/
 ├── src/
 │   ├── app/
-│   │   ├── dashboard/
-│   │   ├── transactions/
-│   │   ├── reports/
-│   │   ├── budgets/
+│   │   ├── (mainLayout)/
+│   │   │   ├── budgets/
+│   │   │   ├── dashboard/
+│   │   │   ├── reports/
+│   │   │   ├── transactions/
+│   │   ├── actions.ts
+│   │   ├── api/
+│   │   │   ├── auth/
+│   │   │   ├── arcjet/
+│   │   │   ├── uploadthing/
+│   │   ├── data/
 │   │   ├── login/
 │   │   ├── onboarding/
-│   │   └── api/
-│   │       ├── auth/
-│   │       ├── arcjet/
-│   │       └── uploadthing/
+│   │   ├── utils/
 │   ├── components/
-│   ├── utils/
+│   │   ├── Dashboard/
+│   │   ├── Sidebar/
+│   │   ├── Transactions/
+│   │   ├── forms/
+│   │   ├── general/
+│   │   ├── ui/
 │   ├── hooks/
 │   ├── lib/
-│   └── public/
+│   └── types/
+├── commitlint.config.ts
+├── components.json
+├── eslint.config.mjs
+├── lint-staged.config.js
+├── next-env.d.ts
+├── next.config.ts
+├── package.json
+├── pnpm-lock.yaml
+├── postcss.config.mjs
+├── README.md
 └── tsconfig.json
+
 ```
 
 ## 📝 Environment Variables (.env)
@@ -132,10 +153,6 @@ The project is automatically deployed using **Vercel**. No CI/CD pipeline is cur
 pnpm run build
 pnpm start
 ```
-
-## 🔍 API Documentation
-
-API documentation is available at `http://localhost:3000/documentation` when the server is running.
 
 ## 🤝 Contribution Guidelines
 
