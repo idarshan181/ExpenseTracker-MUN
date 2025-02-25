@@ -36,15 +36,17 @@ const expensesByCategory = [
   { name: 'Transport', value: 400, fill: 'hsl(var(--chart-2))' },
   { name: 'Entertainment', value: 300, fill: 'hsl(var(--chart-3))' },
   { name: 'Utilities', value: 600, fill: 'hsl(var(--chart-4))' },
+  { name: 'Shopping', value: 500, fill: 'hsl(var(--chart-5))' },
+  { name: 'Health', value: 350, fill: 'hsl(var(--chart-6))' },
 ];
 
 const monthlyTrend = [
-  { month: 'Oct', income: 4800, expenses: 3400 },
-  { month: 'Nov', income: 5000, expenses: 3300 },
-  { month: 'Dec', income: 4900, expenses: 3600 },
-  { month: 'Jan', income: 5100, expenses: 3200 },
-  { month: 'Feb', income: 4800, expenses: 3100 },
-  { month: 'Mar', income: 5200, expenses: 3100 },
+  { month: 'Oct', income: 4800, expenses: 3400, savings: 1400 },
+  { month: 'Nov', income: 5000, expenses: 3300, savings: 1700 },
+  { month: 'Dec', income: 4900, expenses: 3600, savings: 1300 },
+  { month: 'Jan', income: 5100, expenses: 3200, savings: 1900 },
+  { month: 'Feb', income: 4800, expenses: 3100, savings: 1700 },
+  { month: 'Mar', income: 5200, expenses: 3100, savings: 2100 },
 ];
 
 const transactions = [
@@ -395,4 +397,11 @@ const categories = [
   'Other Travel Expenses',
 ];
 
-export { categories, expensesByCategory, monthlyStats, monthlyTrend, recentTransactions, transactions };
+const topSpending = [
+  { category: 'Food', amount: 800, percentage: 27.6, trend: 'up' },
+  { category: 'Utilities', amount: 600, percentage: 20.7, trend: 'down' },
+  { category: 'Shopping', amount: 500, percentage: 17.2, trend: 'up' },
+  { category: 'Transport', amount: 400, percentage: 13.8, trend: 'down' },
+];
+
+export { categories, expensesByCategory, monthlyStats, monthlyTrend, recentTransactions, topSpending, transactions };
