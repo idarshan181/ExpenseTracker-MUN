@@ -1,13 +1,7 @@
 'use client';
 
+import { sidebarItems } from '@/app/data/sidebar';
 import { usePathname } from 'next/navigation';
-
-const sidebarItems = [
-  { label: 'Dashboard', value: '/' },
-  { label: 'Transactions', value: '/transactions' },
-  { label: 'Reports & Insights', value: '/reports' },
-  { label: 'Budgets', value: '/budgets' },
-];
 
 export default function TitleBar() {
   const pathname = usePathname();

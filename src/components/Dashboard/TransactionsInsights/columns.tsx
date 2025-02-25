@@ -6,7 +6,7 @@ import { cn } from '@/lib/utils'; // Ensure you have a utility function for merg
 import { ColumnDef } from '@tanstack/react-table';
 import { ArrowUpDown, Briefcase, CreditCard, DollarSign, ShoppingCart, Wallet } from 'lucide-react';
 
-export type Transaction = {
+export type RecentTransaction = {
   id: number;
   date: string;
   description: string;
@@ -52,7 +52,7 @@ const getStatusBadge = (status: string) => {
   );
 };
 
-export const columns: ColumnDef<Transaction>[] = [
+export const columns: ColumnDef<RecentTransaction>[] = [
   {
     accessorKey: 'date',
     header: ({ column }) => (
