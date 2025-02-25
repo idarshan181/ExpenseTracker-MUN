@@ -20,6 +20,12 @@ With features like **automated transaction logging, smart budgeting tools, and g
   <img src="./public/screenshots/Expense-Tracker-MUN-dark.png" alt="Dark Mode Dashboard" width="45%"/>
 </p>
 
+### Transactions View (Dark & Light Mode)
+<p align="center">
+  <img src="./public/screenshots/Expense-Tracker-MUN-transactions-light.png" alt="Light Mode Transactions" width="45%"/>
+  <img src="./public/screenshots/Expense-Tracker-MUN-transactions-dark.png" alt="Dark Mode Transactions" width="45%"/>
+</p>
+
 ## 🚀 Features
 
 ### ✅ Completed
