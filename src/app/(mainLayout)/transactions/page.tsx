@@ -1,7 +1,9 @@
-export default function TransactionPage() {
+import { requireUser } from '@/app/utils/requireUser';
+import TransactionsClient from '@/components/Transactions/TransactionsClient';
+
+export default async function TranscationPage() {
+  await requireUser();
   return (
-    <div>
-      <h1>Transaction Page</h1>
-    </div>
+    <TransactionsClient />
   );
 }
