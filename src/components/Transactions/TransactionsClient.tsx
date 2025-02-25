@@ -171,7 +171,7 @@ export default function TransactionsClient() {
                         : 'bg-yellow-100 text-yellow-800'
                     }`}
                     >
-                      {transaction.status}
+                      {transaction.status.charAt(0).toUpperCase() + transaction.status.slice(1)}
                     </span>
                   </td>
                   <td className="px-4 py-3">
