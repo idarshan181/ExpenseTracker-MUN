@@ -1,5 +1,3 @@
-'use client';
-
 import ExpenseByCategory from './ExpenseByCategory';
 import MonthlyTrend from './MonthlyTrend';
 
