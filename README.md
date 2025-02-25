@@ -1,36 +1,225 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Expense Tracker
 
-## Getting Started
+<!-- A web-based application that helps users efficiently track their income and expenses, providing insights, categorized spending analysis, and transaction tracking with a modern and intuitive interface. -->
+## **Expense Tracker MUN – Smart Financial Management Made Simple**
 
-First, run the development server:
+**Expense Tracker MUN** is a **web-based application** designed to help users efficiently manage their finances by tracking income, expenses, and spending habits in a structured and intuitive way. Whether it's daily expenses, monthly bills, or long-term savings, this tool provides **real-time insights, categorized spending analysis, and seamless transaction tracking** to ensure users stay financially aware and in control.
+
+With features like **automated transaction logging, smart budgeting tools, and goal-based financial planning**, **Expense Tracker MUN** makes managing money effortless. Users can visualize their spending trends, set savings goals, and track their progress without the hassle of manual calculations. The platform is built with a user-friendly interface, ensuring a smooth experience while prioritizing data privacy and security. Whether you're an individual looking to improve your personal finance habits or someone managing shared expenses, **Expense Tracker MUN** simplifies the process, helping you **spend smarter, save better, and plan for the future with confidence**.
+
+## 📸 Screenshots
+
+### Login Page
+<p align="center">
+  <img src="./public/screenshots/Expense-Tracker-MUN-login.png" alt="Login Page" width="80%"/>
+</p>
+
+### Dashboard View (Dark & Light Mode)
+<p align="center">
+  <img src="./public/screenshots/Expense-Tracker-MUN-light.png" alt="Light Mode Dashboard" width="45%"/>
+  <img src="./public/screenshots/Expense-Tracker-MUN-dark.png" alt="Dark Mode Dashboard" width="45%"/>
+</p>
+
+## 🚀 Features
+
+### ✅ Completed
+[✅] User authentication via GitHub & Google\
+[✅] Dashboard with financial insights\
+[✅] Categorized expense tracking\
+[✅] Monthly transaction trends\
+[✅] Responsive UI with Shadcn components
+
+### ⏳ To Be Completed
+[⏳] Historical Transactions with Filtering\
+[⏳] Recurring Expense Reminders\
+[⏳] Budgeting Tips & Alerts\
+[⏳] Budgeting and notifications for budgeting\
+[⏳] Advanced Financial Goal Setting\
+[⏳] Multi-user Collaboration\
+[⏳] Detailed Financial Reports\
+
+## 🛠️ Tech Stack
+
+- **Frontend**: Next.js 15 (TypeScript, App Router), TailwindCSS, Shadcn
+- **Backend**: Fastify
+- **Database**: PostgreSQL with Prisma ORM
+- **Authentication**: Auth.js (NextAuth)
+- **Deployment**: Vercel (Auto-deploys enabled)
+- **Security/Monitoring**: Arcjet
+
+## 📋 Prerequisites
+
+- **Node.js & PNPM** installed
+- **PostgreSQL** database set up
+
+## 🔧 Installation & Setup
+
+### 1. Clone the repository
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+git clone https://github.com/idarshan181/ExpenseTracker-MUN.git
+cd ExpenseTracker-MUN
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### 2. Install dependencies
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```bash
+pnpm install
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+### 3. Generate Prisma client
 
-## Learn More
+```bash
+pnpm dlx prisma generate
+```
 
-To learn more about Next.js, take a look at the following resources:
+### 4. Run the development server
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+```bash
+pnpm run dev
+```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## 📁 Project Structure
 
-## Deploy on Vercel
+```
+├── README.md
+├── package.json
+├── prisma
+│   └── schema.prisma
+├── src/
+│   ├── app/
+│   │   ├── dashboard/
+│   │   ├── transactions/
+│   │   ├── reports/
+│   │   ├── budgets/
+│   │   ├── login/
+│   │   ├── onboarding/
+│   │   └── api/
+│   │       ├── auth/
+│   │       ├── arcjet/
+│   │       └── uploadthing/
+│   ├── components/
+│   ├── utils/
+│   ├── hooks/
+│   ├── lib/
+│   └── public/
+└── tsconfig.json
+```
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## 📝 Environment Variables (.env)
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Create a `.env` file in the root directory and include the following variables:
+
+```env
+AUTH_SECRET=
+AUTH_GITHUB_ID=
+AUTH_GITHUB_SECRET=
+AUTH_GITHUB_CALLBACK_URL=
+AUTH_GOOGLE_ID=
+AUTH_GOOGLE_SECRET=
+AUTH_GOOGLE_CALLBACK_URL=
+DATABASE_URL=
+UPLOADTHING_TOKEN=
+ARCJET_KEY=
+```
+
+## 🚀 Deployment
+The project is automatically deployed using **Vercel**. No CI/CD pipeline is currently configured.
+
+## 🏃‍♂️ Running in Production
+
+```bash
+pnpm run build
+pnpm start
+```
+
+## 🔍 API Documentation
+
+API documentation is available at `http://localhost:3000/documentation` when the server is running.
+
+## 🤝 Contribution Guidelines
+
+### 🚀 How to Contribute
+
+1. **Fork the repository.**
+2. **Create a new branch** following the commit convention structure:
+
+```sh
+git checkout -b <type>/<scope>
+```
+
+### **Examples:**
+```sh
+git checkout -b feat/dashboard
+git checkout -b feat/analytics
+git checkout -b fix/hydration
+```
+
+3. **Make your changes and commit using the proper commit message format.**
+4. **Push to your branch:**
+```sh
+git push origin <type>/<scope>
+```
+5. **Submit a pull request for review.**
+
+🚨 **Note:** Only the repository owner can merge due to Vercel's hobby limitations.\
+💡 Always create a **new branch for each feature or fix** before submitting a pull request.
+
+---
+
+### Commit Message Format
+
+Please follow the commit message convention as enforced by **Husky** and **Commitlint** based on **Conventional Commits**:
+
+```
+git commit -m "<type>(<scope>): <subject>"
+```
+
+### **type** (Choose from the following):
+
+- **build**: Changes that affect the build system or external dependencies
+- **chore**: General maintenance tasks
+- **ci**: Changes to CI/CD configuration
+- **docs**: Documentation updates
+- **feat**: New features
+- **fix**: Bug fixes
+- **perf**: Performance improvements
+- **refactor**: Code changes that neither fix a bug nor add a feature
+- **revert**: Reverting previous commits
+- **style**: Code style changes (formatting, missing semi-colons, etc.)
+- **test**: Adding or updating tests
+
+### **scope** (Optional)
+A specific area of the codebase affected (e.g., `auth`, `dashboard`).
+
+### **subject**
+A short, descriptive message (**in lowercase, no period at the end**).
+
+#### **Example:**
+```sh
+git commit -m "feat(auth): add Google OAuth support"
+git commit -m "fix(dashboard): resolve incorrect expense calculation"
+git commit -m "docs(readme): update contribution guidelines"
+```
+
+Please follow the commit message convention as enforced by Husky and Commitlint:
+
+```
+git commit -m "feat/fix/chore/subject: message"
+```
+
+- **feat**: For new features
+- **fix**: For bug fixes
+- **chore**: For maintenance or minor tasks
+- **subject**: A short description of the changes
+- **message**: A brief explanation of the commit
+
+---
+
+## 📄 License
+
+This project is for **educational purposes only** and does not include a formal license.
+
+---
+
+For any questions or contributions, feel free to open an issue or submit a PR!
