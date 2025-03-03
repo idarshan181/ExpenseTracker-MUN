@@ -1,4 +1,3 @@
-/* eslint-disable no-console */
 import { PrismaAdapter } from '@auth/prisma-adapter';
 import NextAuth from 'next-auth';
 import Github from 'next-auth/providers/github';
@@ -12,23 +11,66 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
     strategy: 'jwt',
   },
   callbacks: {
+
+    async signIn({ user, account }) {
+      try {
+        // Extract user details from the provider's response
+        const userData = {
+          id: user.id || account?.providerAccountId,
+          hd: account?.provider,
+          email: user.email,
+          email_verified: true, // Google provides this, GitHub doesn't
+          name: user.name,
+          given_name: user.name?.split(' ')[0] || '',
+          family_name: user.name?.split(' ').slice(1).join(' ') || '',
+          picture: user.image,
+        };
+
+        const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/auth/login`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(userData),
+        });
+
+        const data = await response.json();
+        if (!response.ok || !data.token) {
+          console.error('SignIn failed: Backend denied access');
+          return false; // Reject sign in
+        }
+
+        // Store the backend token in the user object for JWT callback
+        if (account) {
+          account.backendToken = data.token as string;
+        }
+        return true;
+      } catch (error) {
+        console.error('Error validating sign-in:', error);
+        return false;
+      }
+    },
     async jwt({ token, account }) {
-      console.log('JWT Callback - Account::Token', account?.id_token);
+      if (account?.backendToken) {
+        token.backendToken = account.backendToken;
+      }
+
       if (account?.id_token) {
         token.accessToken = account.id_token;
-        console.log('JWT Callback - Token:', token);
       }
+
       return token;
     },
     async session({ session, token }) {
-      console.log('Session Callback - Token:', token);
+      // Attach backendToken to session for frontend access
 
-      // NOTE: Exposing accessToken (id_token) in session to client
+      if (typeof token?.backendToken === 'string') {
+        session.backendToken = token.backendToken;
+      } else {
+        console.warn('Warning: Token does not contain a valid backendToken');
+      }
+
+      // Exposing accessToken (OAuth ID token) if needed
       if (token?.accessToken) {
         session.accessToken = token.accessToken as string;
-        console.log('Session Object with Token:', session);
-      } else {
-        console.warn('Warning: Token does not contain accessToken');
       }
 
       return session;
