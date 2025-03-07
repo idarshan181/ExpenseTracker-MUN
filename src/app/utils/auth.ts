@@ -37,11 +37,11 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
           console.error('SignIn failed: Backend denied access');
           return false; // Reject sign in
         }
-
         // Store the backend token in the user object for JWT callback
         if (account) {
           account.backendToken = data.token as string;
         }
+
         return true;
       } catch (error) {
         console.error('Error validating sign-in:', error);
@@ -60,10 +60,13 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       return token;
     },
     async session({ session, token }) {
-      // Attach backendToken to session for frontend access
-
       if (typeof token?.backendToken === 'string') {
         session.backendToken = token.backendToken;
+        session.userId = token.sub as string;
+        session.user = {
+          ...session?.user,
+          id: token.sub as string,
+        };
       } else {
         console.warn('Warning: Token does not contain a valid backendToken');
       }
