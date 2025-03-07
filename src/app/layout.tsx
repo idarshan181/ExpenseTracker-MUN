@@ -1,9 +1,9 @@
 import type { Metadata } from 'next';
 
-import { ThemeProvider } from '@/components/general/ThemeProvider';
+import Providers from '@/components/general/Providers';
 import { Analytics } from '@vercel/analytics/next';
-import { Geist, Geist_Mono } from 'next/font/google';
 
+import { Geist, Geist_Mono } from 'next/font/google';
 import './globals.css';
 
 const geistSans = Geist({
@@ -32,16 +32,10 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <ThemeProvider
-          attribute="class"
-          defaultTheme="system"
-          enableSystem
-          disableTransitionOnChange
-        >
+        <Providers>
           {children}
           <Analytics />
-
-        </ThemeProvider>
+        </Providers>
       </body>
     </html>
   );
