@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 'use client';
 
 import { cn } from '@/lib/utils';
@@ -25,19 +26,53 @@ import {
 import { Input } from '../ui/input';
 import { Popover, PopoverContent, PopoverTrigger } from '../ui/popover';
 import { RadioGroup, RadioGroupItem } from '../ui/radio-group';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../ui/select';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '../ui/select';
 import { Textarea } from '../ui/textarea';
 
-export default function AddTransactionForm() {
+interface AddTransactionFormProps {
+  onSuccess: () => void;
+  onCancel: () => void;
+}
+export default function AddTransactionForm({
+  onSuccess,
+  onCancel,
+}: AddTransactionFormProps) {
   const { data } = useQuery(categoryOptions);
 
   const form = useForm<typeAddTransaction>({
     resolver: zodResolver(transactionSchema),
+    defaultValues: {
+      transactionType: 'expense',
+    },
   });
+
+  const transactionType = form.watch('transactionType');
+
+  const handleReset = () => {
+    form.reset();
+    onCancel();
+  };
+
+  async function onSubmit(data: typeAddTransaction) {
+    console.log('Transaction added', data);
+
+    if (onSuccess) {
+      onSuccess();
+    }
+  };
 
   return (
     <Form {...form}>
-      <form className="w-full space-y-4">
+      <form
+        className="w-full space-y-4"
+        onSubmit={form.handleSubmit(onSubmit)}
+      >
         <FormField
           control={form.control}
           name="transactionType"
@@ -52,15 +87,15 @@ export default function AddTransactionForm() {
                 >
                   <FormItem className="flex items-center space-x-3 space-y-0">
                     <FormControl>
-                      <RadioGroupItem value="income" />
-                    </FormControl>
-                    <FormLabel className="font-normal">Income</FormLabel>
-                  </FormItem>
-                  <FormItem className="flex items-center space-x-3 space-y-0">
-                    <FormControl>
                       <RadioGroupItem value="expense" />
                     </FormControl>
                     <FormLabel className="font-normal">Expense</FormLabel>
+                  </FormItem>
+                  <FormItem className="flex items-center space-x-3 space-y-0">
+                    <FormControl>
+                      <RadioGroupItem value="income" />
+                    </FormControl>
+                    <FormLabel className="font-normal">Income</FormLabel>
                   </FormItem>
                   <FormItem className="flex items-center space-x-3 space-y-0">
                     <FormControl>
@@ -92,6 +127,10 @@ export default function AddTransactionForm() {
                     step="0.1"
                     placeholder="0.00"
                     className="pl-8"
+                    onChange={(e) => {
+                      const value = e.target.value;
+                      field.onChange(value ? Number(value) : ''); // Convert to number
+                    }}
                   />
                 </div>
               </FormControl>
@@ -148,7 +187,7 @@ export default function AddTransactionForm() {
             render={({ field }) => (
               <FormItem className="space-y-3">
                 <FormLabel>Category</FormLabel>
-                <Select onValueChange={field.onChange}>
+                <Select onValueChange={value => field.onChange(Number(value))}>
                   <FormControl>
                     <SelectTrigger>
                       <SelectValue placeholder="Select a category" />
@@ -172,7 +211,7 @@ export default function AddTransactionForm() {
           name="description"
           render={({ field }) => (
             <FormItem className="space-y-3">
-              <FormLabel>Amount</FormLabel>
+              <FormLabel>Description</FormLabel>
               <FormControl>
                 <Textarea {...field} placeholder="Enter transaction details" />
               </FormControl>
@@ -180,6 +219,57 @@ export default function AddTransactionForm() {
             </FormItem>
           )}
         />
+        <FormField
+          control={form.control}
+          name="source"
+          render={({ field }) => (
+            <FormItem className="space-y-3">
+              <FormLabel>Account (Source)</FormLabel>
+              <Select onValueChange={field.onChange}>
+                <FormControl>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select account" />
+                  </SelectTrigger>
+                </FormControl>
+                <SelectContent>
+                  {transactionType === 'expense'
+                    ? (
+                        <>
+                          <SelectItem value="card">Card</SelectItem>
+                          <SelectItem value="cash">Cash</SelectItem>
+                          <SelectItem value="wallet">Wallet</SelectItem>
+                          <SelectItem value="banktransfer">
+                            Bank Transfer
+                          </SelectItem>
+                        </>
+                      )
+                    : transactionType === 'income'
+                      ? (
+                          <>
+                            <SelectItem value="cash">Cash</SelectItem>
+                            <SelectItem value="salary">Salary</SelectItem>
+                          </>
+                        )
+                      : (
+                          <>
+                            <SelectItem value="accounts">Between Accounts</SelectItem>
+                            <SelectItem value="savings">To Savings</SelectItem>
+                            <SelectItem value="investment">To Investment</SelectItem>
+                          </>
+                        )}
+                </SelectContent>
+              </Select>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
+        <div className="flex items-center gap-x-4">
+          <Button type="submit" className="text-white">Save Transaction</Button>
+          <Button type="reset" variant="destructive" onClick={handleReset}>
+            Cancel
+          </Button>
+        </div>
       </form>
     </Form>
   );
