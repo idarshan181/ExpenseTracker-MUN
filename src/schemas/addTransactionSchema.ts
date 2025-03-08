@@ -1,9 +1,8 @@
 import { z } from 'zod';
 
 export const transactionSchema = z.object({
-  userId: z.string().nonempty('User ID is required'),
   categoryId: z.number().optional(),
-  transactionType: z.enum(['expense', 'income'], {
+  transactionType: z.enum(['expense', 'income', 'transfer'], {
     required_error: 'Transaction type is required',
   }),
   source: z.enum(['card', 'cash', 'wallet', 'salary', 'banktransfer']).optional(),
@@ -16,8 +15,6 @@ export const transactionSchema = z.object({
   }),
   description: z.string().optional(),
   attachmentUrl: z.string().url('Attachment URL must be a valid URL').optional(),
-  isActive: z.boolean().default(true),
-  isRecurring: z.boolean().default(false),
 });
 
 export type typeAddTransaction = z.infer<typeof transactionSchema>;
