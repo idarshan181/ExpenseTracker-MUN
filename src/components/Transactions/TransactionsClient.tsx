@@ -7,8 +7,9 @@ import { Calendar } from '@/components/ui/calendar';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { cn } from '@/lib/utils';
 import { format } from 'date-fns';
-import { CalendarIcon, CreditCard, Download, Filter, Pencil, Plus, Search, Trash2, WalletIcon } from 'lucide-react';
+import { CalendarIcon, CreditCard, Download, Filter, Pencil, Search, Trash2, WalletIcon } from 'lucide-react';
 import { useState } from 'react';
+import AddTransactionDialog from '../Dashboard/TransactionsInsights/AddTransactionDialog';
 import CustomPagination from '../general/CustomPagination';
 import { Card, CardContent } from '../ui/card';
 import { Input } from '../ui/input';
@@ -42,14 +43,11 @@ export default function TransactionsClient() {
       <div className="flex items-center justify-between">
         <h1 className="text-2xl font-bold">Transactions</h1>
         <div className="flex items-center space-x-4 ">
-          <Button variant="default" className="flex items-center rounded-lg border px-4 py-2 text-white ">
+          <Button variant="default" className="flex items-center rounded-lg border bg-green-500 px-4 py-2 text-white hover:bg-green-600">
             <Download className="mr-2 size-4" />
             Export
           </Button>
-          <Button className="flex items-center rounded-lg bg-blue-600 px-4 py-2 text-white  hover:bg-blue-700">
-            <Plus className="mr-2 size-4" />
-            Add Transaction
-          </Button>
+          <AddTransactionDialog />
         </div>
       </div>
 
