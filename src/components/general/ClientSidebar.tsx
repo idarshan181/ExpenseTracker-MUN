@@ -1,4 +1,3 @@
-/* eslint-disable no-console */
 'use client';
 import { sidebarItems } from '@/app/data/sidebar';
 import { Button } from '@/components/ui/button';
@@ -23,8 +22,6 @@ export default function ClientSidebar() {
   const { state, toggleSidebar } = useSidebar();
 
   const pathname = usePathname();
-
-  console.log('pathname:', pathname);
 
   return (
     <>
