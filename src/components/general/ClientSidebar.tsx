@@ -47,14 +47,11 @@ export default function ClientSidebar() {
                       <SidebarMenuButton
                         asChild
                         data-active={pathname === item.value}
-                        className="data-[active=true]:text-blue-600"
+                        className=" data-[active=true]:text-blue-600"
                       >
                         <Link
                           href={item.value}
-                          className={cn(
-                            'w-full flex text-lg justify-start px-4 py-3',
-                          // isActive ? 'text-blue-600 font-bold' : 'text-gray-700 hover:bg-gray-100', // Change styles based on isActive
-                          )}
+                          className="flex w-full justify-start px-4 py-3 text-lg hover:bg-blue-100 hover:text-blue-600 dark:hover:bg-gray-700 dark:hover:text-blue-400"
                         >
                           <item.icon className="size-10" />
                           {state === 'expanded' && (

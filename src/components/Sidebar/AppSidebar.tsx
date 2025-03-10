@@ -40,12 +40,13 @@ export default function AppSidebar() {
                     <SidebarMenuButton
                       asChild
                       isActive={isActive}
+                      className="hover:bg-gray-500"
                     >
                       <Link
                         href={item.value}
                         className={cn(
-                          'w-full flex text-lg justify-start px-4 py-3',
-                          isActive ? 'text-blue-600 font-bold' : 'text-gray-700 hover:bg-gray-100', // Change styles based on isActive
+                          'w-full flex text-lg justify-start px-4 py-3 hover:bg-gray-400',
+                          isActive ? 'text-blue-600 font-bold' : 'text-gray-700 hover:bg-gray-400', // Change styles based on isActive
                         )}
                       >
                         <item.icon className="size-10" />
