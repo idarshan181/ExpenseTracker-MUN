@@ -39,16 +39,16 @@ export default function UserDropdown({ email, name, image }: iAppProps) {
           <span className="text-xs text-muted-foreground">{email}</span>
         </DropdownMenuLabel>
         <DropdownMenuSeparator />
-        <DropdownMenuGroup>
+        <DropdownMenuGroup className="cursor-pointer">
           <DropdownMenuItem asChild>
-            <Link href="/budgets">
+            <Link href="/budgets" className="cursor-pointer">
               <Heart size={16} strokeWidth={2} className="opacity-60" />
               <span>Budget</span>
             </Link>
           </DropdownMenuItem>
 
           <DropdownMenuItem asChild>
-            <Link href="/">
+            <Link href="/dashboard" className="cursor-pointer">
               <Layers2 size={16} strokeWidth={2} className="opacity-60" />
               <span>My Expenses</span>
             </Link>
@@ -57,7 +57,7 @@ export default function UserDropdown({ email, name, image }: iAppProps) {
         <DropdownMenuSeparator />
         <DropdownMenuGroup>
           <DropdownMenuItem asChild>
-            <Link href="/settings">
+            <Link href="/settings" className="cursor-pointer">
               <Settings size={16} strokeWidth={2} className="opacity-60" />
               <span>Settings</span>
             </Link>
