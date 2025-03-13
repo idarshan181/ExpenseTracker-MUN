@@ -34,14 +34,17 @@ With features like **automated transaction logging, smart budgeting tools, and g
 [✅] Categorized expense tracking\
 [✅] Monthly transaction trends\
 [✅] Responsive UI with Shadcn components
+[✅] Historical Transactions with Filtering\
+[✅] Category management with CRUD operations\
+[✅] Customizable category hierarchy\
+[✅] Real-time category updates for all users
 
 ### ⏳ To Be Completed
-[⏳] Historical Transactions with Filtering\
+
 [⏳] Recurring Expense Reminders\
 [⏳] Budgeting Tips & Alerts\
 [⏳] Budgeting and notifications for budgeting\
 [⏳] Advanced Financial Goal Setting\
-[⏳] Multi-user Collaboration\
 [⏳] Detailed Financial Reports\
 
 ## 🛠️ Tech Stack
