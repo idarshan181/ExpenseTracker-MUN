@@ -1,4 +1,4 @@
-import { handleSignOut } from '@/app/actions';
+import { handleSignOut } from '@/app/actions/actions';
 import { ChevronDown, Heart, Layers2, LogOut, Settings } from 'lucide-react';
 import Link from 'next/link';
 import { useMemo } from 'react';
