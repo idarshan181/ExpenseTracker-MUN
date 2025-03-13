@@ -1,13 +1,12 @@
-import { fetchCategoriesById } from '@/app/actions';
+import { fetchCategoriesById } from '@/app/actions/categoryActions';
 import { queryOptions } from '@tanstack/react-query';
 
-const fetchCategories = async () => {
-  const response = await fetchCategoriesById();
-  return response;
-};
-
-export const categoryOptions = queryOptions({
+export const getCategoryQueryOptions = () => queryOptions({
   queryKey: ['categories'],
-  queryFn: fetchCategories,
+  queryFn: async () => await fetchCategoriesById(),
+  staleTime: 86400000,
   retry: 1,
+  refetchOnMount: false,
+  refetchOnReconnect: false,
+  refetchOnWindowFocus: false,
 });
