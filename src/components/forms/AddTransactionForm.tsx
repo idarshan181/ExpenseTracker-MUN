@@ -1,18 +1,20 @@
-/* eslint-disable no-console */
 'use client';
 
-import { cn } from '@/lib/utils';
+import { useCategories } from '@/hooks/useCategories';
 
-import { categoryOptions } from '@/query/categories';
+import { cn } from '@/lib/utils';
 import {
   transactionSchema,
   typeAddTransaction,
 } from '@/schemas/addTransactionSchema';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useQuery } from '@tanstack/react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { format } from 'date-fns';
 import { CalendarIcon } from 'lucide-react';
+import { useSession } from 'next-auth/react';
+import { JSXElementConstructor, Key, ReactElement, ReactNode, ReactPortal } from 'react';
 import { useForm } from 'react-hook-form';
+import { toast } from 'sonner';
 import { Button } from '../ui/button';
 import { Calendar } from '../ui/calendar';
 import {
@@ -43,7 +45,9 @@ export default function AddTransactionForm({
   onSuccess,
   onCancel,
 }: AddTransactionFormProps) {
-  const { data } = useQuery(categoryOptions);
+  const { data: session } = useSession();
+  const { data: categories } = useCategories();
+  const queryClient = useQueryClient();
 
   const form = useForm<typeAddTransaction>({
     resolver: zodResolver(transactionSchema),
@@ -59,19 +63,71 @@ export default function AddTransactionForm({
     onCancel();
   };
 
-  async function onSubmit(data: typeAddTransaction) {
-    console.log('Transaction added', data);
+  const mutation = useMutation({
+    mutationFn: async (data: typeAddTransaction) => {
+      if (!session?.user?.backendToken) {
+        throw new Error('User not authenticated');
+      }
 
-    if (onSuccess) {
-      onSuccess();
-    }
-  };
+      const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/transactions/`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${session.user.backendToken}`,
+        },
+        body: JSON.stringify(data),
+      });
+
+      const result = await response.json();
+      if (!response.ok) {
+        throw new Error(result.message || 'Failed to add transaction');
+      }
+
+      return result;
+    },
+    onMutate: async (newTransaction) => {
+      // 🚀 Cancel any ongoing fetch to prevent duplicate calls
+      await queryClient.cancelQueries({ queryKey: ['transactions'] });
+
+      // Get the current state of transactions
+      const previousTransactions = queryClient.getQueryData<typeAddTransaction[]>(['transactions']);
+
+      // 🏆 Optimistically update UI without refetching
+      queryClient.setQueryData<typeAddTransaction[]>(['transactions'], (old = []) => [
+        ...old,
+        { ...newTransaction, id: Math.random(), createdAt: new Date() },
+      ]);
+
+      return { previousTransactions };
+    },
+    onSuccess: (newTransaction) => {
+      toast.success('Transaction Added Successfully!');
+
+      // 🚀 Instead of refetching, update cache manually
+      queryClient.setQueryData<typeAddTransaction[]>(['transactions'], (old = []) => [
+        ...old,
+        newTransaction,
+      ]);
+
+      if (onSuccess) {
+        onSuccess();
+      }
+    },
+    onError: (error: Error, _newTransaction, context) => {
+      toast.error(error.message || 'Failed to add transaction. Please try again.');
+
+      // 🚨 Rollback UI if mutation fails
+      if (context?.previousTransactions) {
+        queryClient.setQueryData(['transactions'], context.previousTransactions);
+      }
+    },
+  });
 
   return (
     <Form {...form}>
       <form
         className="w-full space-y-4"
-        onSubmit={form.handleSubmit(onSubmit)}
+        onSubmit={form.handleSubmit(data => mutation.mutate(data))}
       >
         <FormField
           control={form.control}
@@ -194,11 +250,15 @@ export default function AddTransactionForm({
                     </SelectTrigger>
                   </FormControl>
                   <SelectContent>
-                    {data?.categories.map(category => (
-                      <SelectItem key={category.id} value={String(category.id)}>
-                        {category.name}
-                      </SelectItem>
-                    ))}
+                    {categories
+                      ? (
+                          categories.map((category: { id: Key | null | undefined; name: string | number | bigint | boolean | ReactElement<unknown, string | JSXElementConstructor<any>> | Iterable<ReactNode> | ReactPortal | Promise<string | number | bigint | boolean | ReactPortal | ReactElement<unknown, string | JSXElementConstructor<any>> | Iterable<ReactNode> | null | undefined> | null | undefined }) => (
+                            <SelectItem key={category.id} value={String(category.id)}>
+                              {category.name}
+                            </SelectItem>
+                          ))
+                        )
+                      : null}
                   </SelectContent>
                 </Select>
                 <FormMessage />

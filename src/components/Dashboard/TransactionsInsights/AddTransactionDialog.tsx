@@ -13,11 +13,14 @@ import {
 import { Plus } from 'lucide-react';
 import { useState } from 'react';
 
-export default function AddTransactionDialog() {
+export default function AddTransactionDialog({ refreshTransaction }: { refreshTransaction?: () => void }) {
   const [isOpen, setIsOpen] = useState(false);
 
   const closeDialog = () => {
     setIsOpen(false);
+    if (refreshTransaction) {
+      refreshTransaction();
+    }
   };
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>

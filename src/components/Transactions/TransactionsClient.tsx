@@ -1,3 +1,4 @@
+/* eslint-disable unused-imports/no-unused-vars */
 'use client';
 
 import { categories, transactions } from '@/app/data/mockData';
@@ -5,6 +6,7 @@ import { formatCurrency } from '@/app/utils/formatCurrency';
 import { Button } from '@/components/ui/button';
 import { Calendar } from '@/components/ui/calendar';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
+import { useTransactions } from '@/hooks/useTransactions';
 import { cn } from '@/lib/utils';
 import { format } from 'date-fns';
 import { CalendarIcon, CreditCard, Download, Filter, Pencil, Search, Trash2, WalletIcon } from 'lucide-react';
@@ -23,6 +25,8 @@ export default function TransactionsClient() {
   const [searchTerm, setSearchTerm] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
   const [rowsPerPage, setRowsPerPage] = useState(5);
+
+  const { data, isLoading, refetch } = useTransactions();
 
   const filteredTransactions = transactions.filter((transaction) => {
     const matchesCategory = selectedCategory === 'All' || transaction.category === selectedCategory;
@@ -47,7 +51,7 @@ export default function TransactionsClient() {
             <Download className="mr-2 size-4" />
             Export
           </Button>
-          <AddTransactionDialog />
+          <AddTransactionDialog refreshTransaction={refetch} />
         </div>
       </div>
 

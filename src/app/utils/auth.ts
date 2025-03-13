@@ -61,7 +61,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
     },
     async session({ session, token }) {
       if (typeof token?.backendToken === 'string') {
-        session.backendToken = token.backendToken;
+        session.user.backendToken = token.backendToken;
         session.userId = token.sub as string;
         session.user = {
           ...session?.user,
