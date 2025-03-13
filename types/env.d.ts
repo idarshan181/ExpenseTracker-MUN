@@ -11,5 +11,6 @@ declare namespace NodeJS {
     UPLOADTHING_TOKEN: string;
     ARCJET_KEY: string;
     // Add other environment variables here
+    NEXT_PUBLIC_BACKEND_URL: string;
   }
 }
