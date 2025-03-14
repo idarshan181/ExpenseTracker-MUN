@@ -1,5 +1,6 @@
 'use server';
 
+import { auth } from '../utils/auth';
 import { requireUser } from '../utils/requireUser';
 
 export const getTransactions = async (limit?: number) => {
@@ -33,3 +34,34 @@ export const getTransactions = async (limit?: number) => {
     return [];
   }
 };
+
+export async function deleteTransaction(transactionId: number) {
+  const session = await auth();
+
+  if (!session?.user?.backendToken) {
+    return { error: 'Unauthorized' };
+  }
+
+  try {
+    const response = await fetch(
+      `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/transactions/${transactionId}`,
+      {
+        method: 'DELETE',
+        headers: {
+          'Authorization': `Bearer ${session.user.backendToken}`,
+          'Content-Type': 'application/json',
+        },
+      },
+    );
+
+    const data = await response.json();
+    if (!response.ok) {
+      throw new Error(`Failed to delete transaction: ${response.statusText}`);
+    }
+
+    return data;
+  } catch (error) {
+    console.error('Error deleting link:', error);
+    return { error: 'Failed to delete link' };
+  }
+}
