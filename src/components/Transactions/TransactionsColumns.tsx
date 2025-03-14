@@ -24,24 +24,6 @@ const getPaymentIcon = (method?: string) => {
   return method.toLowerCase().includes('credit') ? <CreditCard className="size-4" /> : <Wallet className="size-4" />;
 };
 
-// Function to get the status badge styles
-// const getStatusBadge = (status: string) => {
-//   const statusStyles = {
-//     completed: 'bg-green-100 text-green-800',
-//     pending: 'bg-yellow-100 text-yellow-800',
-//     failed: 'bg-red-100 text-red-800',
-//   };
-//   if (!status || !(status in statusStyles)) {
-//     return <span className="rounded-full bg-gray-100 px-3 py-1 text-sm font-semibold text-gray-800">Unknown</span>;
-//   }
-
-//   return (
-//     <span className={cn('rounded-full px-3 py-1 text-sm font-semibold', statusStyles[status as keyof typeof statusStyles])}>
-//       {status.charAt(0).toUpperCase() + status.slice(1)}
-//     </span>
-//   );
-// };
-
 // Define the columns for the DataTable
 export const TransactionColumns: ColumnDef<Transaction>[] = [
   {

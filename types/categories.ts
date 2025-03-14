@@ -5,6 +5,6 @@ export type Category = {
   icon?: string;
   color?: string;
   isDefault: boolean;
-  createdAt: Date;
-  updatedAt: Date;
+  createdAt: string;
+  updatedAt: string;
 };

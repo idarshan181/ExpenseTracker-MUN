@@ -33,3 +33,37 @@ export const fetchCategoriesById = async () => {
     return [];
   }
 };
+
+// write deleteCategoryById function here
+export const deleteCategoryById = async (categoryId: number) => {
+  const user = await requireUser();
+  const { backendToken } = user;
+
+  if (!backendToken) {
+    return;
+  }
+
+  try {
+    const response = await fetch(
+      `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/categories/${categoryId}`,
+      {
+        method: 'DELETE',
+        headers: {
+          'Authorization': `Bearer ${backendToken}`,
+          'Content-Type': 'application/json',
+        },
+      },
+    );
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      throw new Error(`Failed to delete category: ${response.statusText}`);
+    }
+
+    return data;
+  } catch (error) {
+    console.error('Error deleting category:', error);
+    return { error: 'Failed to delete category' };
+  }
+};

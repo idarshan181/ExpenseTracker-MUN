@@ -1,14 +1,10 @@
 'use client';
 
-import { fetchCategoriesById } from '@/app/actions/categoryActions';
+import { getCategoryQueryOptions } from '@/query/categories';
 import { useQuery } from '@tanstack/react-query';
 
 export function useCategories() {
-  return useQuery({
-    queryKey: ['categories'],
-    queryFn: fetchCategoriesById,
-    staleTime: 5000, // Re-fetch every 5 seconds
-    retry: 1,
+  const categoryQuery = getCategoryQueryOptions();
 
-  });
+  return useQuery(categoryQuery);
 }

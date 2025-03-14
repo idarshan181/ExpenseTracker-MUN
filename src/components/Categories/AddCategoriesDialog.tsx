@@ -1,39 +1,36 @@
 'use client';
 
-import { Button } from '@/components/ui/button';
 import {
   Dialog,
   DialogContent,
+  DialogDescription,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
 } from '@/components/ui/dialog';
-import { Plus } from 'lucide-react';
-import { useState } from 'react';
 import AddCategoriesForm from '../forms/AddCategoriesForm';
 
-export default function AddCategoriesDialog({ refreshCategories }: { refreshCategories: () => void }) {
-  const [isOpen, setIsOpen] = useState(false);
+type CategoryDialogProps = {
+  refreshCategories?: () => void;
+  category?: any;
+  isOpen: boolean;
+  setIsOpen: (open: boolean) => void;
+};
 
+export default function AddCategoriesDialog({ refreshCategories, category = null, isOpen, setIsOpen }: CategoryDialogProps) {
   const closeDialog = () => {
     setIsOpen(false);
     refreshCategories?.();
   };
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
-      <DialogTrigger asChild>
-        <Button onClick={() => setIsOpen(true)} className="flex items-center space-x-2 rounded-lg bg-blue-600 px-4 py-2 text-white transition-colors hover:bg-blue-700">
-          <Plus className="size-5" />
-          <span>Add Category</span>
-        </Button>
-      </DialogTrigger>
       <DialogContent className="w-full max-w-xl">
         <DialogHeader>
-          <div>
-            <DialogTitle>Add New Category</DialogTitle>
-          </div>
+          <DialogTitle>{category ? 'Edit Category' : 'Add New Category'}</DialogTitle>
+          <DialogDescription>
+            {category ? 'Update the category details' : 'Add a new category'}
+          </DialogDescription>
         </DialogHeader>
-        <AddCategoriesForm onSuccess={closeDialog} onCancel={closeDialog} />
+        <AddCategoriesForm onSuccess={closeDialog} onCancel={closeDialog} category={category} />
       </DialogContent>
     </Dialog>
   );

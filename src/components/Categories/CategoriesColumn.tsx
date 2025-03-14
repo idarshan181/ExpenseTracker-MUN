@@ -1,3 +1,5 @@
+/* eslint-disable no-console */
+/* eslint-disable react-hooks/rules-of-hooks */
 'use client';
 
 import { Button } from '@/components/ui/button';
@@ -7,6 +9,10 @@ import { ColumnDef } from '@tanstack/react-table';
 import { format } from 'date-fns';
 
 import * as LucideIcons from 'lucide-react';
+import { useState } from 'react';
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from '../ui/dropdown-menu';
+import AddCategoriesDialog from './AddCategoriesDialog';
+import { DeleteCategoryButton } from './DeleteCategoryButton';
 
 const getCategoryIcon = (iconName?: string, color?: string) => {
   if (!iconName) {
@@ -90,23 +96,64 @@ export const CategoriesColumn: ColumnDef<Category>[] = [
         className="flex items-center space-x-2 text-base font-semibold"
         onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
       >
-        <span>Created At</span>
-        <LucideIcons.ArrowUpDown className="size-5" />
+        <span>Date</span>
+        <LucideIcons.ArrowUpDown className="size-4" />
       </Button>
     ),
-    cell: ({ row }) => (
-      <div className="text-base font-medium ">
-        {format(new Date(row.getValue('createdAt')), 'yyyy-MM-dd')}
-      </div>
-    ),
+    cell: ({ row }) => <div className="text-base font-medium">{format(row.getValue('createdAt'), 'dd MMMM, yyyy')}</div>,
   },
   {
     accessorKey: 'updatedAt',
     header: () => <div className="text-base font-semibold">Last Updated</div>,
     cell: ({ row }) => (
       <div className="text-base font-medium ">
-        {format(new Date(row.getValue('updatedAt')), 'yyyy-MM-dd')}
+        {format(row.getValue('updatedAt'), 'dd MMMM, yyyy')}
       </div>
     ),
+  },
+  {
+    id: 'actions',
+    cell: ({ row }) => {
+      const category = row.original;
+
+      const [isMenuOpen, setIsMenuOpen] = useState(false);
+      const [isDialogOpen, setIsDialogOpen] = useState(false);
+
+      return (
+        <>
+          <DropdownMenu open={isMenuOpen} onOpenChange={setIsMenuOpen}>
+            <DropdownMenuTrigger asChild>
+              <Button variant="ghost" className="size-8 p-0">
+                <span className="sr-only">Open menu</span>
+                <LucideIcons.MoreHorizontal className="size-4" />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end">
+              <DropdownMenuLabel>Actions</DropdownMenuLabel>
+              <DropdownMenuItem
+                onClick={() => {
+                  console.log(`category`, category);
+                  setIsDialogOpen(true); // Open the edit dialog
+                  setIsMenuOpen(false); // Close the dropdown
+                }}
+              >
+                <LucideIcons.Pencil className="mr-2 size-4" />
+                <span>Edit</span>
+              </DropdownMenuItem>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem className="w-full p-0" asChild>
+                <DeleteCategoryButton categoryId={category.id} closeDropDown={() => setIsMenuOpen(false)} />
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+          {/* Transaction Edit Dialog */}
+          <AddCategoriesDialog
+            category={category}
+            isOpen={isDialogOpen}
+            setIsOpen={setIsDialogOpen}
+          />
+        </>
+      );
+    },
   },
 ];

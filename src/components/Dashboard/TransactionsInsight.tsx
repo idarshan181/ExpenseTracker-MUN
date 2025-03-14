@@ -8,7 +8,7 @@ import { Loader2, Plus } from 'lucide-react';
 import { useState } from 'react';
 
 import AddTransactionDialog from '../Transactions/AddTransactionDialog';
-import { DataTable } from '../Transactions/TransactionTable';
+import { TransactionTable } from '../Transactions/TransactionTable';
 
 export default function TransactionsInsight() {
   const { data: recentTransactions, isLoading, refetch } = useTransactions();
@@ -34,7 +34,7 @@ export default function TransactionsInsight() {
             )
           : recentTransactions?.length >= 0
             ? (
-                <DataTable columns={TransactionColumns} data={recentTransactions} />
+                <TransactionTable columns={TransactionColumns} data={recentTransactions} />
               )
             : (
                 <div className="flex flex-col items-center justify-center space-y-4 py-12">

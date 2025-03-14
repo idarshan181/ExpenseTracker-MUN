@@ -36,7 +36,7 @@ interface DataTableProps<TData, TValue> {
   data: TData[];
 }
 
-export function TransactionTable<TData extends Record<string, any>, TValue>({
+export function CategoriesTable<TData extends Record<string, any>, TValue>({
   columns,
   data,
 }: DataTableProps<TData, TValue>) {
@@ -84,8 +84,6 @@ export function TransactionTable<TData extends Record<string, any>, TValue>({
     },
   });
 
-  // Filter transactions by date range
-
   return (
     <div className=" rounded-lg border border-gray-200 p-2 shadow">
 
@@ -96,7 +94,7 @@ export function TransactionTable<TData extends Record<string, any>, TValue>({
           <Search className="absolute left-3 top-2.5 size-5 text-gray-400" />
           <Input
             type="text"
-            placeholder="Search transactions..."
+            placeholder="Search categories..."
             value={globalFilter}
             onChange={e => setGlobalFilter(e.target.value)}
             className="w-full rounded-lg border border-gray-300 py-2 pl-10 pr-4 focus:border-transparent focus:outline-none focus:ring-2 focus:ring-blue-500"

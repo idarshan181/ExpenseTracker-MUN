@@ -4,15 +4,14 @@ import { cn } from '@/lib/utils';
 
 import { categorySchema, typeAddCategory } from '@/schemas/addCategorySchema';
 
-import { Category } from '@/types/categories';
-
 import { zodResolver } from '@hookform/resolvers/zod';
 
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { Loader2 } from 'lucide-react';
 import { useSession } from 'next-auth/react';
-import { useForm } from 'react-hook-form';
+import { useEffect } from 'react';
 
+import { useForm } from 'react-hook-form';
 import { toast } from 'sonner';
 import { availableCategories, DEFAULT_COLOR } from '../Categories/CategoryIcons';
 import { Button } from '../ui/button';
@@ -37,11 +36,13 @@ import { Textarea } from '../ui/textarea';
 interface AddCategoriesFormProps {
   onSuccess: () => void;
   onCancel: () => void;
+  category?: typeAddCategory | null;
 }
 
 export default function AddCategoriesForm({
   onSuccess,
   onCancel,
+  category,
 }: AddCategoriesFormProps) {
   const { data: session } = useSession();
 
@@ -50,12 +51,18 @@ export default function AddCategoriesForm({
   const form = useForm<typeAddCategory>({
     resolver: zodResolver(categorySchema),
     defaultValues: {
-      name: '',
-      icon: '',
-      color: DEFAULT_COLOR,
-      description: '',
+      name: category ? category.name : '',
+      icon: category?.icon ?? availableCategories[0].name,
+      color: category?.color ?? DEFAULT_COLOR,
+      description: category?.description ?? '',
     },
   });
+
+  useEffect(() => {
+    if (category) {
+      form.reset(category);
+    }
+  }, [category, form]);
 
   const handleReset = () => {
     form.reset();
@@ -114,8 +121,14 @@ export default function AddCategoriesForm({
         throw new Error('User not authenticated');
       }
 
-      const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/categories/`, {
-        method: 'POST',
+      const url = category
+        ? `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/categories/${category.id}/`
+        : `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/categories/`;
+
+      const method = category ? 'PUT' : 'POST';
+
+      const response = await fetch(url, {
+        method,
         headers: {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${session.user.backendToken}`,
@@ -125,7 +138,7 @@ export default function AddCategoriesForm({
 
       const result = await response.json();
       if (!response.ok) {
-        throw new Error(result.message || 'Something went wrong');
+        throw new Error(result.message || category ? 'Failed to update category' : 'Failed to add category');
       }
 
       return result;
@@ -135,24 +148,22 @@ export default function AddCategoriesForm({
       await queryClient.cancelQueries({ queryKey: ['categories'] });
 
       // Get the current state of categories
-      const previousCategories = queryClient.getQueryData<Category[]>(['categories']);
+      const previousCategories = queryClient.getQueryData<typeAddCategory[]>(['categories']);
 
-      // 🏆 Optimistically update UI without refetching
-      queryClient.setQueryData<Category[]>(['categories'], (old = []) => [
-        ...old,
-        { ...newCategory, id: Math.random(), createdAt: new Date(), updatedAt: new Date() },
-      ]);
+      queryClient.setQueryData<typeAddCategory[]>(
+        ['categories'],
+        (old = []) => [
+          ...old,
+          { ...newCategory, id: Math.random(), createdAt: new Date() },
+        ],
+      );
 
       return { previousCategories };
     },
-    onSuccess: (newCategory) => {
+    onSuccess: () => {
       toast.success('Category Added Successfully!');
 
-      // 🚀 Instead of refetching, update cache manually
-      queryClient.setQueryData<Category[]>(['categories'], (old = []) => [
-        ...old,
-        newCategory,
-      ]);
+      queryClient.invalidateQueries({ queryKey: ['categories'] });
 
       form.reset();
       if (onSuccess) {
