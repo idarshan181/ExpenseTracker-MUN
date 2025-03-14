@@ -38,7 +38,7 @@ export const getTransactions = async (limit?: number) => {
   }
 };
 
-export async function deleteTransaction(transactionId: number) {
+export async function deleteTransactionById(transactionId: number) {
   const session = await auth();
 
   if (!session?.user?.backendToken) {
