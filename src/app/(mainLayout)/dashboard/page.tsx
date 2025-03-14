@@ -1,5 +1,5 @@
 import FinancialInsights from '@/components/Dashboard/FinancialInsights/FinancialInsights';
-import TransactionsInsight from '@/components/Dashboard/TransactionsInsights/TransactionsInsight';
+import TransactionsInsight from '@/components/Dashboard/TransactionsInsight';
 import QuickStatCard from '@/components/general/QuickStatCard';
 import { monthlyStats } from '../../data/mockData';
 import { requireUser } from '../../utils/requireUser';
