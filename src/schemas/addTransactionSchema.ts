@@ -1,6 +1,7 @@
 import { z } from 'zod';
 
 export const transactionSchema = z.object({
+  id: z.number().optional(),
   categoryId: z.number().optional(),
   transactionType: z.enum(['expense', 'income', 'transfer'], {
     required_error: 'Transaction type is required',
@@ -17,4 +18,6 @@ export const transactionSchema = z.object({
   attachmentUrl: z.string().url('Attachment URL must be a valid URL').optional(),
 });
 
-export type typeAddTransaction = z.infer<typeof transactionSchema>;
+export type typeAddTransaction = z.infer<typeof transactionSchema> & {
+  category?: { id: number; name: string } | null; // Ensure category exists in type
+}; ;
