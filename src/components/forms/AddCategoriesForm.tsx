@@ -4,15 +4,16 @@ import { cn } from '@/lib/utils';
 
 import { categorySchema, typeAddCategory } from '@/schemas/addCategorySchema';
 
+import { Category } from '@/types/categories';
+
 import { zodResolver } from '@hookform/resolvers/zod';
 
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-
 import { Loader2 } from 'lucide-react';
 import { useSession } from 'next-auth/react';
 import { useForm } from 'react-hook-form';
+
 import { toast } from 'sonner';
-import { Category } from '../Categories/CategoriesColumn';
 import { availableCategories, DEFAULT_COLOR } from '../Categories/CategoryIcons';
 import { Button } from '../ui/button';
 import {
@@ -51,7 +52,7 @@ export default function AddCategoriesForm({
     defaultValues: {
       name: '',
       icon: '',
-      color: '',
+      color: DEFAULT_COLOR,
       description: '',
     },
   });
@@ -230,7 +231,7 @@ export default function AddCategoriesForm({
               <FormItem className="space-y-3">
                 <FormLabel>Category Color</FormLabel>
                 <FormControl>
-                  <Input type="color" {...field} defaultValue={DEFAULT_COLOR} />
+                  <Input type="color" {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>

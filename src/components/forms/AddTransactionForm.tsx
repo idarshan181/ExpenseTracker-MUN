@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 'use client';
 
 import { useCategories } from '@/hooks/useCategories';
@@ -12,7 +13,7 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { format } from 'date-fns';
 import { CalendarIcon } from 'lucide-react';
 import { useSession } from 'next-auth/react';
-import { JSXElementConstructor, Key, ReactElement, ReactNode, ReactPortal } from 'react';
+import { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { toast } from 'sonner';
 import { Button } from '../ui/button';
@@ -40,23 +41,38 @@ import { Textarea } from '../ui/textarea';
 interface AddTransactionFormProps {
   onSuccess: () => void;
   onCancel: () => void;
+  transaction?: typeAddTransaction | null;
 }
 export default function AddTransactionForm({
   onSuccess,
   onCancel,
+  transaction,
 }: AddTransactionFormProps) {
   const { data: session } = useSession();
   const { data: categories } = useCategories();
   const queryClient = useQueryClient();
 
+  console.log('categories', categories);
+
   const form = useForm<typeAddTransaction>({
     resolver: zodResolver(transactionSchema),
     defaultValues: {
-      transactionType: 'expense',
+      transactionType: transaction?.transactionType ?? 'expense',
+      amount: 0, // Default to 0 instead of undefined
+      categoryId: transaction?.categoryId ?? transaction?.category?.id, // ✅ Use categoryId or fallback to category.id
+      transactionDate: new Date(), // Ensure date is always set
+      description: transaction?.description ?? '',
+      source: transaction?.source ?? undefined,
     },
   });
 
-  const transactionType = form.watch('transactionType');
+  useEffect(() => {
+    if (transaction) {
+      form.reset(transaction);
+    }
+  }, [transaction, form]);
+
+  const transactionType = form.watch('transactionType') || 'expense';
 
   const handleReset = () => {
     form.reset();
@@ -69,8 +85,14 @@ export default function AddTransactionForm({
         throw new Error('User not authenticated');
       }
 
-      const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/transactions/`, {
-        method: 'POST',
+      const url = transaction
+        ? `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/transactions/${transaction.id}/`
+        : `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/transactions/`;
+
+      const method = transaction ? 'PUT' : 'POST';
+
+      const response = await fetch(url, {
+        method,
         headers: {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${session.user.backendToken}`,
@@ -90,35 +112,55 @@ export default function AddTransactionForm({
       await queryClient.cancelQueries({ queryKey: ['transactions'] });
 
       // Get the current state of transactions
-      const previousTransactions = queryClient.getQueryData<typeAddTransaction[]>(['transactions']);
+      const previousTransactions = queryClient.getQueryData<
+        typeAddTransaction[]
+      >(['transactions']);
 
       // 🏆 Optimistically update UI without refetching
-      queryClient.setQueryData<typeAddTransaction[]>(['transactions'], (old = []) => [
-        ...old,
-        { ...newTransaction, id: Math.random(), createdAt: new Date() },
-      ]);
+      queryClient.setQueryData<typeAddTransaction[]>(
+        ['transactions'],
+        (old = []) => [
+          ...old,
+          { ...newTransaction, id: Math.random(), createdAt: new Date() },
+        ],
+      );
 
       return { previousTransactions };
     },
-    onSuccess: (newTransaction) => {
-      toast.success('Transaction Added Successfully!');
+    onSuccess: () => {
+      toast.success(
+        transaction ? 'Transaction Updated Successfully!' : 'Transaction Added Successfully!',
+      );
 
       // 🚀 Instead of refetching, update cache manually
-      queryClient.setQueryData<typeAddTransaction[]>(['transactions'], (old = []) => [
-        ...old,
-        newTransaction,
-      ]);
+      // queryClient.setQueryData<typeAddTransaction[]>(
+      //   ['transactions'],
+      //   (old = []) => {
+      //     if (transaction) {
+      //       return old.map(t =>
+      //         t.id === updatedTransaction.id ? updatedTransaction : t,
+      //       );
+      //     }
+      //     return old;
+      //   },
+      // );
+      queryClient.invalidateQueries({ queryKey: ['transactions'] });
 
       if (onSuccess) {
         onSuccess();
       }
     },
     onError: (error: Error, _newTransaction, context) => {
-      toast.error(error.message || 'Failed to add transaction. Please try again.');
+      toast.error(
+        error.message || 'Failed to add transaction. Please try again.',
+      );
 
       // 🚨 Rollback UI if mutation fails
       if (context?.previousTransactions) {
-        queryClient.setQueryData(['transactions'], context.previousTransactions);
+        queryClient.setQueryData(
+          ['transactions'],
+          context.previousTransactions,
+        );
       }
     },
   });
@@ -243,22 +285,27 @@ export default function AddTransactionForm({
             render={({ field }) => (
               <FormItem className="space-y-3">
                 <FormLabel>Category</FormLabel>
-                <Select onValueChange={value => field.onChange(Number(value))}>
+                <Select
+                  onValueChange={value => field.onChange(Number(value))}
+                  value={field.value ? String(field.value) : ''}
+                >
                   <FormControl>
                     <SelectTrigger>
                       <SelectValue placeholder="Select a category" />
                     </SelectTrigger>
                   </FormControl>
                   <SelectContent>
-                    {categories
+                    {categories && categories.length > 0
                       ? (
-                          categories.map((category: { id: Key | null | undefined; name: string | number | bigint | boolean | ReactElement<unknown, string | JSXElementConstructor<any>> | Iterable<ReactNode> | ReactPortal | Promise<string | number | bigint | boolean | ReactPortal | ReactElement<unknown, string | JSXElementConstructor<any>> | Iterable<ReactNode> | null | undefined> | null | undefined }) => (
-                            <SelectItem key={category.id} value={String(category.id)}>
-                              {category.name}
+                          categories.map(({ id, name }: { id: number; name: string }) => (
+                            <SelectItem key={id} value={String(id)}>
+                              {name}
                             </SelectItem>
                           ))
                         )
-                      : null}
+                      : (
+                          <SelectItem disabled value="none">No categories available</SelectItem>
+                        )}
                   </SelectContent>
                 </Select>
                 <FormMessage />
@@ -285,10 +332,12 @@ export default function AddTransactionForm({
           render={({ field }) => (
             <FormItem className="space-y-3">
               <FormLabel>Account (Source)</FormLabel>
-              <Select onValueChange={field.onChange}>
+              <Select value={field.value || ''} onValueChange={field.onChange}>
                 <FormControl>
                   <SelectTrigger>
-                    <SelectValue placeholder="Select account" />
+                    <SelectValue placeholder="Select account">
+                      {field.value ? field.value.charAt(0).toUpperCase() + field.value.slice(1) : 'Select account'}
+                    </SelectValue>
                   </SelectTrigger>
                 </FormControl>
                 <SelectContent>
@@ -325,7 +374,9 @@ export default function AddTransactionForm({
         />
 
         <div className="flex items-center gap-x-4">
-          <Button type="submit" className="text-white">Save Transaction</Button>
+          <Button type="submit" className="text-white">
+            {transaction ? 'Update Transaction' : 'Save Transaction'}
+          </Button>
           <Button type="reset" variant="destructive" onClick={handleReset}>
             Cancel
           </Button>
