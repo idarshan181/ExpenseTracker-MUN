@@ -2,21 +2,11 @@
 
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils'; // Ensure you have a utility function for merging class names
+import { Category } from '@/types/categories';
 import { ColumnDef } from '@tanstack/react-table';
 import { format } from 'date-fns';
 
 import * as LucideIcons from 'lucide-react';
-
-export type Category = {
-  id: number;
-  name: string;
-  description?: string;
-  icon?: string;
-  color?: string;
-  isDefault: boolean;
-  createdAt: Date;
-  updatedAt: Date;
-};
 
 const getCategoryIcon = (iconName?: string, color?: string) => {
   if (!iconName) {

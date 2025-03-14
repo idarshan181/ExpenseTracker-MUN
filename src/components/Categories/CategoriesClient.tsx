@@ -1,7 +1,7 @@
 'use client';
 
 import { useCategories } from '@/hooks/useCategories';
-import { DataTable } from '../Dashboard/TransactionsInsights/data-table';
+import { DataTable } from '../Transactions/TransactionTable';
 import AddCategoriesDialog from './AddCategoriesDialog';
 import { CategoriesColumn } from './CategoriesColumn';
 
