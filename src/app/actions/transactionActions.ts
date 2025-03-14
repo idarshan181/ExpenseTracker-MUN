@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 'use server';
 
 import { auth } from '../utils/auth';
@@ -6,6 +7,8 @@ import { requireUser } from '../utils/requireUser';
 export const getTransactions = async (limit?: number) => {
   const user = await requireUser();
   const { backendToken } = user;
+
+  console.log('Fetching transactions');
 
   try {
     const url
