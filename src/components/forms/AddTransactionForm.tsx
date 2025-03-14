@@ -1,4 +1,3 @@
-/* eslint-disable no-console */
 'use client';
 
 import { useCategories } from '@/hooks/useCategories';
@@ -51,8 +50,6 @@ export default function AddTransactionForm({
   const { data: session } = useSession();
   const { data: categories } = useCategories();
   const queryClient = useQueryClient();
-
-  console.log('categories', categories);
 
   const form = useForm<typeAddTransaction>({
     resolver: zodResolver(transactionSchema),
