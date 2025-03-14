@@ -6,7 +6,7 @@ import { Download, Plus } from 'lucide-react';
 import { useState } from 'react';
 import AddTransactionDialog from './AddTransactionDialog';
 import { TransactionColumns } from './TransactionsColumns';
-import { DataTable } from './TransactionTable';
+import { TransactionTable } from './TransactionTable';
 
 export default function TransactionsClient() {
   const { data: transactions, isLoading, refetch } = useTransactions();
@@ -35,7 +35,7 @@ export default function TransactionsClient() {
       </div>
 
       {/* Transactions Table */}
-      <DataTable columns={TransactionColumns} data={transactions} />
+      <TransactionTable columns={TransactionColumns} data={transactions} />
 
     </div>
   );

@@ -36,7 +36,7 @@ interface DataTableProps<TData, TValue> {
   data: TData[];
 }
 
-export function DataTable<TData extends Record<string, any>, TValue>({
+export function TransactionTable<TData extends Record<string, any>, TValue>({
   columns,
   data,
 }: DataTableProps<TData, TValue>) {
