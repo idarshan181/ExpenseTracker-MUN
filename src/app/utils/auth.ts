@@ -40,6 +40,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         // Store the backend token in the user object for JWT callback
         if (account) {
           account.backendToken = data.token as string;
+          account.userData = userData;
         }
 
         return true;
