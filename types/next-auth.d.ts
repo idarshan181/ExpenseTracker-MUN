@@ -15,9 +15,18 @@ declare module 'next-auth' {
   }
   interface Account extends DefaultAccount {
     backendToken?: string;
+    userData?: {
+      id?: string | null | undefined;
+      hd?: string | null | undefined;
+      email?: string | null | undefined;
+      email_verified?: boolean | null;
+      name?: string | null | undefined;
+      given_name?: string | null | undefined;
+      family_name?: string | null | undefined;
+      picture?: string | null | undefined;
+    };
   }
 }
-
 declare module 'next-auth/jwt' {
   interface JWT {
     accessToken?: string;
