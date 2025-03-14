@@ -1,6 +1,7 @@
 /* eslint-disable no-console */
 'use client';
 
+import { deleteTransactionById } from '@/app/actions/transactionActions';
 import { Button } from '@/components/ui/button';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { Trash } from 'lucide-react';
@@ -15,10 +16,10 @@ export function DeleteTransactionButton({ transactionId, closeDropDown }: { tran
   const mutation = useMutation({
     mutationFn: async () => {
       console.log(transactionId);
-      // const response = await deleteTransaction(transactionId);
-      // if (response.error) {
-      //   throw new Error(response.error);
-      // }
+      const response = await deleteTransactionById(transactionId);
+      if (response.error) {
+        throw new Error(response.error);
+      }
     },
     onSuccess: async () => {
       await queryClient.invalidateQueries({ queryKey: ['transactions'] });
