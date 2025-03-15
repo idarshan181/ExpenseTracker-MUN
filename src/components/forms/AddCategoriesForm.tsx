@@ -13,7 +13,7 @@ import { useEffect } from 'react';
 
 import { useForm } from 'react-hook-form';
 import { toast } from 'sonner';
-import { availableCategories, DEFAULT_COLOR } from '../Categories/CategoryIcons';
+import { availableCategories } from '../Categories/CategoryIcons';
 import { Button } from '../ui/button';
 import {
   Form,
@@ -53,7 +53,7 @@ export default function AddCategoriesForm({
     defaultValues: {
       name: category ? category.name : '',
       icon: category?.icon ?? availableCategories[0].name,
-      color: category?.color ?? DEFAULT_COLOR,
+      color: category?.color ?? '#000000',
       description: category?.description ?? '',
     },
   });
@@ -154,16 +154,17 @@ export default function AddCategoriesForm({
         ['categories'],
         (old = []) => [
           ...old,
-          { ...newCategory, id: Math.random(), createdAt: new Date() },
+          { ...newCategory, id: Math.random(), createdAt: new Date().toString() },
         ],
       );
 
       return { previousCategories };
     },
-    onSuccess: () => {
+    onSuccess: async () => {
       toast.success('Category Added Successfully!');
 
-      queryClient.invalidateQueries({ queryKey: ['categories'] });
+      await queryClient.invalidateQueries({ queryKey: ['categories'] });
+      await queryClient.refetchQueries({ queryKey: ['categories'] });
 
       form.reset();
       if (onSuccess) {
