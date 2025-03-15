@@ -1,156 +1,190 @@
-/* eslint-disable unused-imports/no-unused-vars */
 'use client';
 
-import { transactions } from '@/app/data/mockData';
-import { formatCurrency } from '@/app/utils/formatCurrency';
+import { applyDateFilter } from '@/app/utils/dateFilter';
+import CustomPagination from '@/components/general/CustomPagination';
 import { Button } from '@/components/ui/button';
-import { ChevronLeft, ChevronRight, CreditCard, Pencil, Trash2, WalletIcon } from 'lucide-react';
+import { Calendar } from '@/components/ui/calendar';
+import { Input } from '@/components/ui/input';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from '@/components/ui/table';
+
+import {
+  ColumnDef,
+  ColumnFiltersState,
+  flexRender,
+  getCoreRowModel,
+  getFilteredRowModel,
+  getPaginationRowModel,
+  getSortedRowModel,
+  SortingState,
+  useReactTable,
+} from '@tanstack/react-table';
+import { format } from 'date-fns';
+import { CalendarIcon, Search } from 'lucide-react';
 import { useState } from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from '../ui/card';
+import { DateRange } from 'react-day-picker';
 
-export default function BudgetTable() {
-  const [selectedCategory, setSelectedCategory] = useState('All');
-  const [searchTerm, setSearchTerm] = useState('');
-  const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 5;
+interface DataTableProps<TData, TValue> {
+  columns: ColumnDef<TData, TValue>[];
+  data: TData[];
+}
 
-  const filteredTransactions = transactions.filter((transaction) => {
-    const matchesCategory = selectedCategory === 'All' || transaction.category === selectedCategory;
-    const matchesSearch = transaction.description.toLowerCase().includes(searchTerm.toLowerCase())
-      || transaction.category.toLowerCase().includes(searchTerm.toLowerCase());
-    return matchesCategory && matchesSearch;
+export function BudgetTable<TData extends Record<string, any>, TValue>({
+  columns,
+  data,
+}: DataTableProps<TData, TValue>) {
+  const [sorting, setSorting] = useState<SortingState>([]);
+  const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
+  const [globalFilter, setGlobalFilter] = useState(''); // Global search filter except date range
+  const [dateRange, setDateRange] = useState<DateRange | undefined>(undefined);
+
+  const [pageSize, setPageSize] = useState(5);
+  const [pageIndex, setPageIndex] = useState(0);
+  const filteredData = applyDateFilter<TData>(data, dateRange, 'createdAt');
+
+  const table = useReactTable({
+    data: filteredData,
+    columns,
+    getCoreRowModel: getCoreRowModel(),
+    getPaginationRowModel: getPaginationRowModel(),
+    onSortingChange: setSorting,
+    getSortedRowModel: getSortedRowModel(),
+    onColumnFiltersChange: setColumnFilters,
+    getFilteredRowModel: getFilteredRowModel(),
+    manualPagination: false,
+    rowCount: data.length,
+    state: {
+      sorting,
+      columnFilters,
+      globalFilter, // Set global filter state
+      pagination: { pageIndex, pageSize },
+    },
+    onPaginationChange: (updater) => {
+      const newState
+        = typeof updater === 'function'
+          ? updater({ pageIndex, pageSize })
+          : updater;
+      setPageIndex(newState.pageIndex);
+      setPageSize(newState.pageSize);
+    },
+    globalFilterFn: (row, columnId, filterValue) => {
+      const value = row.getValue(columnId);
+      return (
+        String(value)
+          .toLowerCase()
+          .includes(filterValue.toLowerCase())
+      );
+    },
   });
 
-  const totalPages = Math.ceil(filteredTransactions.length / itemsPerPage);
-  const currentTransactions = filteredTransactions.slice(
-    (currentPage - 1) * itemsPerPage,
-    currentPage * itemsPerPage,
-  );
-
   return (
-    <div className="space-y-6">
+    <div className=" rounded-lg border border-gray-200 p-2 shadow">
+      <div className="mb-4 flex flex-wrap items-center justify-between gap-4 rounded-lg p-4">
+        <div className="relative w-full max-w-sm">
+          <Search className="absolute left-3 top-2.5 size-5 text-gray-400" />
+          <Input
+            type="text"
+            placeholder="Search budgets..."
+            value={globalFilter}
+            onChange={e => setGlobalFilter(e.target.value)}
+            className="w-full rounded-lg border border-gray-300 py-2 pl-10 pr-4 focus:border-transparent focus:outline-none focus:ring-2 focus:ring-blue-500"
+          />
+        </div>
 
-      {/* Filters */}
-      {/* Transactions Table */}
-      <Card className="overflow-hidden rounded-lg shadow">
-        <CardHeader className="border-b border-gray-200">
-          <CardTitle>Active Budgets</CardTitle>
-        </CardHeader>
-        <CardContent className="m-0 w-full p-0">
-          <table className="w-full">
-            <thead>
-              <tr className="w-full border-b border-gray-200">
-                <th className="px-4 py-3 text-left">Date</th>
-                <th className="px-4 py-3 text-left">Description</th>
-                <th className="px-4 py-3 text-left">Category</th>
-                <th className="px-4 py-3 text-left">Amount</th>
-                <th className="px-4 py-3 text-left">Method</th>
-                <th className="px-4 py-3 text-left">Status</th>
-                <th className="px-4 py-3 text-left">Actions</th>
-              </tr>
-            </thead>
-            <tbody>
-              {currentTransactions.map(transaction => (
-                <tr key={transaction.id} className="border-b border-gray-100 ">
-                  <td className="px-4 py-3">{transaction.date}</td>
-                  <td className="px-4 py-3">
-                    <div>
-                      <div className="font-medium">{transaction.description}</div>
-                      <div className="text-sm text-gray-500">{transaction.notes}</div>
-                    </div>
-                  </td>
-                  <td className="px-4 py-3">
-                    <span className="rounded-full px-2 py-1 text-sm">
-                      {transaction.category}
-                    </span>
-                  </td>
-                  <td className={`px-4 py-3 font-medium ${
-                    transaction.amount > 0 ? 'text-green-600' : 'text-red-600'
-                  }`}
+        {/* Date Range Filter */}
+        <div className="flex items-center space-x-2">
+          <CalendarIcon className="size-5 text-gray-400" />
+          <Popover>
+            <PopoverTrigger asChild>
+              <Button variant="outline" className="w-[260px] text-left">
+                {dateRange?.from && dateRange?.to
+                  ? `${format(dateRange.from, 'dd MMM yyyy')} - ${format(
+                    dateRange.to,
+                    'dd MMM yyyy',
+                  )}`
+                  : 'Select date range'}
+              </Button>
+            </PopoverTrigger>
+            <PopoverContent className="w-auto p-0">
+              <Calendar
+                mode="range"
+                selected={dateRange}
+                onSelect={setDateRange}
+                disabled={date =>
+                  date > new Date() || date < new Date('1900-01-01')}
+                initialFocus
+              />
+            </PopoverContent>
+          </Popover>
+        </div>
+      </div>
+
+      <Table>
+        <TableHeader>
+          {table.getHeaderGroups().map(headerGroup => (
+            <TableRow key={headerGroup.id}>
+              {headerGroup.headers.map((header) => {
+                return (
+                  <TableHead key={header.id}>
+                    {header.isPlaceholder
+                      ? null
+                      : flexRender(
+                          header.column.columnDef.header,
+                          header.getContext(),
+                        )}
+                  </TableHead>
+                );
+              })}
+            </TableRow>
+          ))}
+        </TableHeader>
+        <TableBody>
+          {table.getRowModel().rows && table.getRowModel().rows?.length
+            ? (
+                table.getRowModel().rows.map(row => (
+                  <TableRow
+                    key={row.id}
+                    data-state={row.getIsSelected() && 'selected'}
                   >
-                    {formatCurrency('CAD', transaction.amount)}
-                  </td>
-                  <td className="px-4 py-3">
-                    <div className="flex items-center space-x-2">
-                      {transaction.method === 'Credit Card'
-                        ? (
-                            <CreditCard className="size-4" />
-                          )
-                        : (
-                            <WalletIcon className="size-4" />
-                          )}
-                      <span>{transaction.method}</span>
-                    </div>
-                  </td>
-                  <td className="px-4 py-3">
-                    <span className={`rounded-full px-2 py-1 text-sm ${
-                      transaction.status === 'completed'
-                        ? 'bg-green-100 text-green-800'
-                        : 'bg-yellow-100 text-yellow-800'
-                    }`}
-                    >
-                      {transaction.status.charAt(0).toUpperCase() + transaction.status.slice(1)}
-                    </span>
-                  </td>
-                  <td className="px-4 py-3">
-                    <div className="flex items-center space-x-2">
-                      <Button variant="ghost" className="rounded p-1 ">
-                        <Pencil className="size-4 text-gray-500" />
-                      </Button>
-                      <Button variant="ghost" className="rounded p-1 ">
-                        <Trash2 className="size-4 text-red-500" />
-                      </Button>
-                    </div>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+                    {row.getVisibleCells().map(cell => (
+                      <TableCell key={cell.id}>
+                        {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                      </TableCell>
+                    ))}
+                  </TableRow>
+                ))
+              )
+            : (
+                <TableRow>
+                  <TableCell colSpan={columns.length} className="h-24 text-center">
+                    No results.
+                  </TableCell>
+                </TableRow>
+              )}
+        </TableBody>
+      </Table>
 
-          {/* Pagination */}
-          <div className="flex items-center justify-between border-t border-gray-200 px-4 py-3">
-            <div className="text-sm text-gray-500">
-              Showing
-              {' '}
-              {((currentPage - 1) * itemsPerPage) + 1}
-              {' '}
-              to
-              {' '}
-              {Math.min(currentPage * itemsPerPage, filteredTransactions.length)}
-              {' '}
-              of
-              {' '}
-              {filteredTransactions.length}
-              {' '}
-              transactions
-            </div>
-            <div className="flex items-center space-x-2">
-              <Button
-                variant="ghost"
-                onClick={() => setCurrentPage(prev => Math.max(1, prev - 1))}
-                disabled={currentPage === 1}
-                className="rounded p-2 hover:bg-gray-100 disabled:opacity-50"
-              >
-                <ChevronLeft className="size-5" />
-              </Button>
-              <span className="rounded border px-3 py-1">
-                {currentPage}
-                {' '}
-                /
-                {totalPages}
-              </span>
-              <Button
-                variant="ghost"
-                onClick={() => setCurrentPage(prev => Math.min(totalPages, prev + 1))}
-                disabled={currentPage === totalPages}
-                className="rounded p-2 hover:bg-gray-100 disabled:opacity-50"
-              >
-                <ChevronRight className="size-5" />
-              </Button>
-            </div>
-          </div>
-        </CardContent>
-      </Card>
+      {data.length > pageSize && (
+        <div className="flex items-center justify-end">
+          <CustomPagination
+            totalPages={table.getPageCount()}
+            currentPage={pageIndex + 1} // Adjust for 1-based indexing
+            setCurrentPage={page => table.setPageIndex(page - 1)}
+            rowsPerPage={pageSize}
+            setRowsPerPage={(size) => {
+              table.setPageSize(size);
+              setPageSize(size);
+            }}
+          />
+        </div>
+      )}
     </div>
   );
 }
