@@ -11,7 +11,7 @@ import AddTransactionDialog from '../Transactions/AddTransactionDialog';
 import { TransactionTable } from '../Transactions/TransactionTable';
 
 export default function TransactionsInsight() {
-  const { data: recentTransactions, isLoading, refetch } = useTransactions();
+  const { data: recentTransactions, isLoading, refetch } = useTransactions(5);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
 
   return (
