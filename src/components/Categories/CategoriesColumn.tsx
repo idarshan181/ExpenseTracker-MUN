@@ -12,21 +12,16 @@ import * as LucideIcons from 'lucide-react';
 import { useState } from 'react';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from '../ui/dropdown-menu';
 import AddCategoriesDialog from './AddCategoriesDialog';
+import { availableCategories, DEFAULT_COLOR, DEFAULT_ICON } from './CategoryIcons';
 import { DeleteCategoryButton } from './DeleteCategoryButton';
 
-const getCategoryIcon = (iconName?: string, color?: string) => {
-  if (!iconName) {
-    return <LucideIcons.Package className="size-4 text-gray-400" />;
-  }
+const getCategoryIcon = (iconName?: string, storedColor?: string) => {
+  const category = availableCategories.find(cat => cat.name === iconName);
 
-  const Icon = (LucideIcons as unknown as Record<string, React.ElementType>)[
-    iconName
-  ];
-  if (!Icon) {
-    return <LucideIcons.Package className="size-4 text-gray-400" />;
-  }
+  const IconComponent = category?.icon ?? DEFAULT_ICON;
+  const iconColor = storedColor || category?.color || DEFAULT_COLOR; // Prioritize stored color
 
-  return <Icon className={`size-4 ${color ?? 'text-gray-400'}`} />;
+  return <IconComponent className={`size-4 ${iconColor}`} />;
 };
 
 export const CategoriesColumn: ColumnDef<Category>[] = [
@@ -48,7 +43,7 @@ export const CategoriesColumn: ColumnDef<Category>[] = [
   },
   {
     accessorKey: 'description',
-    header: () => <div className="text-base  font-semibold">Description</div>,
+    header: () => <div className="text-base font-semibold">Description</div>,
     cell: ({ row }) => (
       <div className="text-base font-medium">
         {row.getValue('description') || '—'}
@@ -57,27 +52,27 @@ export const CategoriesColumn: ColumnDef<Category>[] = [
   },
   {
     accessorKey: 'icon',
-    header: () => <div className="text-base font-semibold">Icon</div>,
+    header: () => <div className="text-center text-base font-semibold">Icon</div>,
     cell: ({ row }) => {
       const icon = row.getValue<string>('icon');
       const color = row.original.color;
       return (
-        <div className="flex items-center space-x-3">
+        <div className="flex items-center space-x-2  text-center">
           {getCategoryIcon(icon, color)}
-          <span className="text-base font-medium">{icon || 'Default'}</span>
+          <span className=" text-base font-medium">{icon || 'Default'}</span>
         </div>
       );
     },
   },
   {
     accessorKey: 'isDefault',
-    header: () => <div className="text-base font-semibold">Default</div>,
+    header: () => <div className="w-full max-w-16 text-center text-base font-semibold">Default</div>,
     cell: ({ row }) => {
       const isDefault = row.getValue<boolean>('isDefault');
       return (
         <div
           className={cn(
-            'px-2 py-1 rounded-full text-sm font-medium',
+            'px-2 py-1 rounded-full w-full max-w-16 text-center text-sm font-medium',
             isDefault
               ? 'bg-green-100 text-green-800'
               : 'bg-gray-100 text-gray-800',
@@ -96,7 +91,7 @@ export const CategoriesColumn: ColumnDef<Category>[] = [
         className="flex items-center space-x-2 text-base font-semibold"
         onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
       >
-        <span>Date</span>
+        <span>Created At</span>
         <LucideIcons.ArrowUpDown className="size-4" />
       </Button>
     ),

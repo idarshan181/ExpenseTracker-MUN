@@ -16,7 +16,7 @@ export default function CategoriesClient() {
     return <div>Loading...</div>;
   }
 
-  console.log(categories);
+  console.log('categories in client', categories);
 
   return (
     <div className="space-y-6">
