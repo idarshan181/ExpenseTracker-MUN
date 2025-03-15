@@ -93,7 +93,7 @@ export const TransactionColumns: ColumnDef<Transaction>[] = [
       return (
         <div className="flex items-center space-x-2">
           {getPaymentIcon(source)}
-          <span>{source}</span>
+          <span>{source.charAt(0).toUpperCase() + source.slice(1)}</span>
         </div>
       );
     },

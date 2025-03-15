@@ -122,6 +122,8 @@ export function TransactionTable<TData extends Record<string, any>, TValue>({
                 mode="range"
                 selected={dateRange} // ✅ Now matches expected type
                 onSelect={setDateRange} // ✅ Handles undefined properly
+                disabled={date =>
+                  date > new Date() || date < new Date('1900-01-01')}
                 initialFocus
               />
             </PopoverContent>
