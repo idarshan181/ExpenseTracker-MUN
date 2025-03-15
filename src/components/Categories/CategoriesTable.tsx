@@ -61,7 +61,10 @@ export function CategoriesTable<TData extends Record<string, any>, TValue>({
     manualPagination: false,
     rowCount: data.length,
     state: {
-      sorting,
+      sorting: [
+        ...sorting,
+        { id: 'createdAt', desc: true },
+      ],
       columnFilters,
       globalFilter, // Set global filter state
       pagination: { pageIndex, pageSize },
@@ -118,8 +121,10 @@ export function CategoriesTable<TData extends Record<string, any>, TValue>({
             <PopoverContent className="w-auto p-0">
               <Calendar
                 mode="range"
-                selected={dateRange} // ✅ Now matches expected type
-                onSelect={setDateRange} // ✅ Handles undefined properly
+                selected={dateRange}
+                onSelect={setDateRange}
+                disabled={date =>
+                  date > new Date() || date < new Date('1900-01-01')}
                 initialFocus
               />
             </PopoverContent>
