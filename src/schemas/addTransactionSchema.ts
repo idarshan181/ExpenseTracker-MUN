@@ -1,7 +1,7 @@
 import { z } from 'zod';
 
 export const transactionSchema = z.object({
-  id: z.number().optional(),
+  id: z.string().optional(),
   categoryId: z.number().optional(),
   transactionType: z.enum(['expense', 'income'], {
     required_error: 'Transaction type is required',
