@@ -104,61 +104,28 @@ export default function AddTransactionForm({
 
       return result;
     },
-    onMutate: async (newTransaction) => {
+    onMutate: async () => {
       // 🚀 Cancel any ongoing fetch to prevent duplicate calls
       await queryClient.cancelQueries({ queryKey: ['transactions'] });
-
-      // Get the current state of transactions
-      const previousTransactions = queryClient.getQueryData<
-        typeAddTransaction[]
-      >(['transactions']);
-
-      // 🏆 Optimistically update UI without refetching
-      queryClient.setQueryData<typeAddTransaction[]>(
-        ['transactions'],
-        (old = []) => [
-          ...old,
-          { ...newTransaction, id: Math.random(), createdAt: new Date() },
-        ],
-      );
-
-      return { previousTransactions };
     },
-    onSuccess: () => {
+    onSuccess: async () => {
       toast.success(
         transaction ? 'Transaction Updated Successfully!' : 'Transaction Added Successfully!',
       );
 
-      // 🚀 Instead of refetching, update cache manually
-      // queryClient.setQueryData<typeAddTransaction[]>(
-      //   ['transactions'],
-      //   (old = []) => {
-      //     if (transaction) {
-      //       return old.map(t =>
-      //         t.id === updatedTransaction.id ? updatedTransaction : t,
-      //       );
-      //     }
-      //     return old;
-      //   },
-      // );
-      queryClient.invalidateQueries({ queryKey: ['transactions'] });
+      await queryClient.invalidateQueries({ queryKey: ['categories'] });
+      await queryClient.refetchQueries({ queryKey: ['categories'] });
+
+      form.reset();
 
       if (onSuccess) {
         onSuccess();
       }
     },
-    onError: (error: Error, _newTransaction, context) => {
+    onError: (error: Error, _newTransaction) => {
       toast.error(
         error.message || 'Failed to add transaction. Please try again.',
       );
-
-      // 🚨 Rollback UI if mutation fails
-      if (context?.previousTransactions) {
-        queryClient.setQueryData(
-          ['transactions'],
-          context.previousTransactions,
-        );
-      }
     },
   });
 
@@ -191,12 +158,6 @@ export default function AddTransactionForm({
                       <RadioGroupItem value="income" />
                     </FormControl>
                     <FormLabel className="font-normal">Income</FormLabel>
-                  </FormItem>
-                  <FormItem className="flex items-center space-x-3 space-y-0">
-                    <FormControl>
-                      <RadioGroupItem value="transfer" />
-                    </FormControl>
-                    <FormLabel className="font-normal">Transfer</FormLabel>
                   </FormItem>
                 </RadioGroup>
               </FormControl>
@@ -344,9 +305,6 @@ export default function AddTransactionForm({
                           <SelectItem value="card">Card</SelectItem>
                           <SelectItem value="cash">Cash</SelectItem>
                           <SelectItem value="wallet">Wallet</SelectItem>
-                          <SelectItem value="banktransfer">
-                            Bank Transfer
-                          </SelectItem>
                         </>
                       )
                     : transactionType === 'income'

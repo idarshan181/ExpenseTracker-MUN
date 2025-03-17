@@ -69,52 +69,6 @@ export default function AddCategoriesForm({
     onCancel();
   };
 
-  // 🔹 Use TanStack Query's `useMutation` for handling URL shortening
-  // const mutation = useMutation({
-  //   mutationFn: async (data: typeAddCategory) => {
-  //     if (!session?.user?.backendToken) {
-  //       throw new Error('User not authenticated');
-  //     }
-
-  //     console.log('data', JSON.stringify(data));
-
-  //     const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/categories/`, {
-  //       method: 'POST',
-  //       headers: {
-  //         'Content-Type': 'application/json',
-  //         'Authorization': `Bearer ${session.user.backendToken}`,
-  //       },
-  //       body: JSON.stringify(data),
-  //     });
-
-  //     const result = await response.json();
-  //     if (!response.ok) {
-  //       throw new Error(result.message || 'Something went wrong');
-  //     }
-
-  //     return result; // Return API response
-  //   },
-  //   onMutate: (data) => {
-  //     console.log('Mutating with data:', data); // ✅ Logs immediately before request
-  //   },
-  //   onSuccess: async () => {
-  //     await queryClient.invalidateQueries({ queryKey: ['categories'] });
-  //     await queryClient.refetchQueries({ queryKey: ['categories'] });
-  //     // ✅ Show success toast
-  //     toast.success('Category Added Successfully!');
-
-  //     // ✅ Reset form fields
-  //     form.reset();
-
-  //     if (onSuccess) {
-  //       onSuccess();
-  //     }
-  //   },
-  //   onError: (error: Error) => {
-  //     toast.error(error.message || 'Failed to create category. Please try again.');
-  //   },
-  // });
-
   const mutation = useMutation({
     mutationFn: async (data: typeAddCategory) => {
       if (!session?.user?.backendToken) {
@@ -138,27 +92,18 @@ export default function AddCategoriesForm({
 
       const result = await response.json();
       if (!response.ok) {
-        throw new Error(result.message || category ? 'Failed to update category' : 'Failed to add category');
+        throw new Error(
+          result.message || category
+            ? 'Failed to update category'
+            : 'Failed to add category',
+        );
       }
 
       return result;
     },
-    onMutate: async (newCategory) => {
-      // 🚀 Cancel any ongoing fetch to prevent duplicate calls
+    onMutate: async () => {
+      // cancel any ongoing fetch to prevent duplicate calls
       await queryClient.cancelQueries({ queryKey: ['categories'] });
-
-      // Get the current state of categories
-      const previousCategories = queryClient.getQueryData<typeAddCategory[]>(['categories']);
-
-      queryClient.setQueryData<typeAddCategory[]>(
-        ['categories'],
-        (old = []) => [
-          ...old,
-          { ...newCategory, id: Math.random(), createdAt: new Date().toString() },
-        ],
-      );
-
-      return { previousCategories };
     },
     onSuccess: async () => {
       toast.success('Category Added Successfully!');
@@ -171,19 +116,19 @@ export default function AddCategoriesForm({
         onSuccess();
       }
     },
-    onError: (error: Error, _newCategory, context) => {
-      toast.error(error.message || 'Failed to create category. Please try again.');
-
-      // 🚨 Rollback UI if mutation fails
-      if (context?.previousCategories) {
-        queryClient.setQueryData(['categories'], context.previousCategories);
-      }
+    onError: (error: Error, _newCategory) => {
+      toast.error(
+        error.message || 'Failed to create category. Please try again.',
+      );
     },
   });
 
   return (
     <Form {...form}>
-      <form className="w-full space-y-4" onSubmit={form.handleSubmit(data => mutation.mutate(data))}>
+      <form
+        className="w-full space-y-4"
+        onSubmit={form.handleSubmit(data => mutation.mutate(data))}
+      >
         <FormField
           control={form.control}
           name="name"
@@ -223,7 +168,9 @@ export default function AddCategoriesForm({
                 <SelectContent>
                   {availableCategories.map(({ name, icon: Icon, color }) => (
                     <SelectItem key={name} value={name}>
-                      <Icon className={cn(color, 'w-5 h-5 inline-block mr-2')} />
+                      <Icon
+                        className={cn(color, 'w-5 h-5 inline-block mr-2')}
+                      />
                       <span>{name}</span>
                     </SelectItem>
                   ))}
@@ -249,10 +196,16 @@ export default function AddCategoriesForm({
               </FormItem>
             )}
           />
-
         </div>
         <div className="flex justify-start space-x-2">
-          <Button type="submit" className={cn('text-white cursor-pointer', !onCancel ? 'w-full' : '')} disabled={mutation.isPending}>
+          <Button
+            type="submit"
+            className={cn(
+              'text-white cursor-pointer',
+              !onCancel ? 'w-full' : '',
+            )}
+            disabled={mutation.isPending}
+          >
             {mutation.isPending
               ? (
                   <>
@@ -265,10 +218,14 @@ export default function AddCategoriesForm({
                 )}
           </Button>
 
-          <Button type="reset" variant="destructive" className="cursor-pointer" onClick={handleReset}>
+          <Button
+            type="reset"
+            variant="destructive"
+            className="cursor-pointer"
+            onClick={handleReset}
+          >
             Cancel
           </Button>
-
         </div>
       </form>
     </Form>
