@@ -1,9 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -14,18 +8,19 @@ datasource db {
 }
 
 model User {
-  id            String    @id @default(cuid())
-  name          String?
-  email         String    @unique
-  emailVerified DateTime?
-  image         String?
-  accounts      Account[]
-  sessions      Session[]
-
-  onboardingCompleted Boolean @default(false)
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id                  String        @id @default(cuid())
+  name                String?
+  email               String        @unique
+  emailVerified       DateTime?
+  image               String?
+  onboardingCompleted Boolean       @default(false)
+  createdAt           DateTime      @default(now())
+  updatedAt           DateTime      @updatedAt
+  accounts            Account[]
+  Budget              Budget[]
+  Category            Category[]
+  sessions            Session[]
+  Transaction         Transaction[]
 }
 
 model Account {
@@ -40,23 +35,23 @@ model Account {
   scope             String?
   id_token          String?
   session_state     String?
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+  user              User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@id([provider, providerAccountId])
+  @@index([userId])
 }
 
 model Session {
   sessionToken String   @unique
   userId       String
   expires      DateTime
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
   user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  @@index([userId])
 }
 
 model VerificationToken {
@@ -65,4 +60,65 @@ model VerificationToken {
   expires    DateTime
 
   @@id([identifier, token])
+}
+
+model Budget {
+  id          String    @id
+  userId      String
+  categoryId  String?
+  bname       String?
+  currency    String    @default("CAD")
+  amount      Decimal   @db.Decimal(10, 2)
+  period      String
+  startDate   DateTime  @db.Date
+  endDate     DateTime? @db.Date
+  isActive    Boolean   @default(true)
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime
+  description String?
+  Category    Category? @relation(fields: [categoryId], references: [id])
+  User        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([categoryId])
+  @@index([userId])
+}
+
+model Category {
+  id          String        @id
+  name        String
+  userId      String
+  description String?
+  icon        String?
+  color       String?
+  isDefault   Boolean       @default(false)
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime
+  Budget      Budget[]
+  User        User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  Transaction Transaction[]
+
+  @@index([userId])
+}
+
+model Transaction {
+  id              String    @id
+  userId          String
+  categoryId      String?
+  transactionType String
+  source          String?
+  currency        String    @default("CAD")
+  amount          Decimal   @db.Decimal(10, 2)
+  transactionDate DateTime  @db.Date
+  description     String?
+  attachmentUrl   String?
+  isActive        Boolean   @default(true)
+  isRecurring     Boolean   @default(false)
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime
+  Category        Category? @relation(fields: [categoryId], references: [id])
+  User            User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([categoryId])
+  @@index([transactionDate])
+  @@index([userId])
 }
