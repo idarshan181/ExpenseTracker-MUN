@@ -35,7 +35,7 @@ export const fetchCategoriesById = async () => {
 };
 
 // write deleteCategoryById function here
-export const deleteCategoryById = async (categoryId: number) => {
+export const deleteCategoryById = async (categoryId: string) => {
   const user = await requireUser();
   const { backendToken } = user;
 
