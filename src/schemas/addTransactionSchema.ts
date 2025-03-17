@@ -3,10 +3,10 @@ import { z } from 'zod';
 export const transactionSchema = z.object({
   id: z.number().optional(),
   categoryId: z.number().optional(),
-  transactionType: z.enum(['expense', 'income', 'transfer'], {
+  transactionType: z.enum(['expense', 'income'], {
     required_error: 'Transaction type is required',
   }),
-  source: z.enum(['card', 'cash', 'wallet', 'salary', 'banktransfer']).optional(),
+  source: z.enum(['card', 'cash', 'wallet', 'salary']).optional(),
   currency: z.string().default('CAD'),
   amount: z.number()
     .positive('Amount must be a positive number')
