@@ -56,7 +56,11 @@ export default function AddTransactionForm({
     defaultValues: {
       transactionType: transaction?.transactionType ?? 'expense',
       amount: 0, // Default to 0 instead of undefined
-      categoryId: transaction?.categoryId ?? transaction?.category?.id, // ✅ Use categoryId or fallback to category.id
+      categoryId: transaction?.categoryId
+        ? String(transaction.categoryId)
+        : transaction?.category?.id
+          ? String(transaction.category.id)
+          : undefined,
       transactionDate: new Date(), // Ensure date is always set
       description: transaction?.description ?? '',
       source: transaction?.source ?? undefined,
@@ -244,7 +248,7 @@ export default function AddTransactionForm({
               <FormItem className="space-y-3">
                 <FormLabel>Category</FormLabel>
                 <Select
-                  onValueChange={value => field.onChange(Number(value))}
+                  onValueChange={value => field.onChange(String(value))}
                   value={field.value ? String(field.value) : ''}
                 >
                   <FormControl>
@@ -255,7 +259,7 @@ export default function AddTransactionForm({
                   <SelectContent>
                     {categories && categories.length > 0
                       ? (
-                          categories.map(({ id, name }: { id: number; name: string }) => (
+                          categories.map(({ id, name }: { id: string; name: string }) => (
                             <SelectItem key={id} value={String(id)}>
                               {name}
                             </SelectItem>
