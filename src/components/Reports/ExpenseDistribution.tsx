@@ -6,10 +6,13 @@ import { Card, CardContent, CardHeader, CardTitle } from '../ui/card';
 import { ChartContainer, ChartTooltip, ChartTooltipContent } from '../ui/chart';
 
 export default function ExpenseDistribution() {
+  // const { data: spending, isLoading, refetch } = useSpendingByCategoriesQuery();
   return (
     <Card>
       <CardHeader className="items-start">
-        <CardTitle className="text-lg font-bold">Expense Distribution</CardTitle>
+        <CardTitle className="text-lg font-bold">
+          Expense Distribution
+        </CardTitle>
       </CardHeader>
       <CardContent className="mx-auto w-full flex-1 pb-0">
         <ChartContainer
@@ -18,7 +21,10 @@ export default function ExpenseDistribution() {
         >
           <ResponsiveContainer width="100%" height="100%">
             <PieChart className="w-full">
-              <ChartTooltip cursor={false} content={<ChartTooltipContent hideLabel />} />
+              <ChartTooltip
+                cursor={false}
+                content={<ChartTooltipContent hideLabel />}
+              />
               <Pie
                 data={expensesByCategory}
                 cx="50%"
