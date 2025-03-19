@@ -1,6 +1,6 @@
 'use client';
 
-import { monthlyTrend } from '@/app/data/mockData';
+import { useSpendingTrendQuery } from '@/hooks/useSpendingTrend';
 import {
   CartesianGrid,
   Legend,
@@ -15,9 +15,20 @@ import { Card, CardContent, CardHeader, CardTitle } from '../ui/card';
 import { ChartContainer } from '../ui/chart';
 
 export default function IncomeExpenseTrend() {
-  // const { data: trend, isLoading, refetch } = useSpendingTrendQuery();
+  const { data: trend, isLoading } = useSpendingTrendQuery();
 
-  // console.log(trend);
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
+  if (!trend || trend.length === 0) {
+    return null;
+  }
+
+  const formattedTrend = trend.map((item: any) => ({
+    ...item,
+    savings: item.income - item.expense,
+  }));
+
   return (
     <Card className="flex flex-col">
       <CardHeader className="items-center pb-0">
@@ -31,7 +42,7 @@ export default function IncomeExpenseTrend() {
           className="mx-auto aspect-square max-h-[350px] w-full"
         >
           <ResponsiveContainer width="100%" height="100%">
-            <LineChart data={monthlyTrend}>
+            <LineChart data={formattedTrend}>
               <CartesianGrid strokeDasharray="3 3" />
               <XAxis dataKey="month" />
               <YAxis />
@@ -45,7 +56,7 @@ export default function IncomeExpenseTrend() {
               />
               <Line
                 type="monotone"
-                dataKey="expenses"
+                dataKey="expense"
                 stroke="#FF8042"
                 strokeWidth={2}
               />

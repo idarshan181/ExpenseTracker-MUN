@@ -8,7 +8,7 @@ import { queryOptions } from '@tanstack/react-query';
 
 export const getSpendingsQuery = () =>
   queryOptions({
-    queryKey: ['categories'],
+    queryKey: [],
     queryFn: async () => await fetchSpendingByCategory(),
     staleTime: 86400000,
     retry: 1,
@@ -18,7 +18,7 @@ export const getSpendingsQuery = () =>
   });
 
 export const transactionsTrendQuery = () => ({
-  queryKey: ['categories'],
+  queryKey: [],
   queryFn: async () => await fetchTransactionsTrend(),
   staleTime: 86400000,
   retry: 1,
@@ -28,7 +28,7 @@ export const transactionsTrendQuery = () => ({
 });
 
 export const overallSpendingQuery = () => ({
-  queryKey: ['categories'],
+  queryKey: [],
   queryFn: async () => await fetchOverallSummary(),
   staleTime: 86400000,
   retry: 1,
@@ -38,7 +38,7 @@ export const overallSpendingQuery = () => ({
 });
 
 export const getTopSpendingByCategory = () => ({
-  queryKey: ['categories'],
+  queryKey: [],
   queryFn: async () => await fetchTopSpendingByCategory(),
   staleTime: 86400000,
   retry: 1,

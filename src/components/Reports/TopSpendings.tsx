@@ -1,6 +1,5 @@
 'use client';
 
-import { topSpending } from '@/app/data/mockData';
 import { formatCurrency } from '@/app/utils/formatCurrency';
 import { useTopSpendingByCategory } from '@/hooks/useTopSpendingByCategory';
 import { TrendingDown, TrendingUp } from 'lucide-react';
@@ -18,7 +17,7 @@ export default function TopSpendings() {
       {spending?.length > 0
         ? (
             <CardContent className="space-y-4">
-              {topSpending.map(category => (
+              {spending.map((category: any) => (
                 <div
                   key={category.category}
                   className="flex items-center justify-between"
@@ -43,10 +42,10 @@ export default function TopSpendings() {
                     </p>
                     <p
                       className={`flex items-center justify-end text-sm ${
-                        category.trend === 'up' ? 'text-red-500' : 'text-green-500'
+                        category.percentage > 50 ? 'text-red-500' : 'text-green-500'
                       }`}
                     >
-                      {category.trend === 'up'
+                      {category.percentage > 50
                         ? (
                             <TrendingUp className="mr-1 size-4" />
                           )
@@ -61,7 +60,7 @@ export default function TopSpendings() {
             </CardContent>
           )
         : (
-            <p>Sorry no spedning data yet</p>
+            <p>Sorry no spending data yet</p>
           )}
     </Card>
   );
