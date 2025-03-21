@@ -1,7 +1,9 @@
 export type Budget = {
+  bname: string;
   id: string;
   userId: string;
   categoryId?: string;
+  category: { id: string; name: string } | null;
   currency: string;
   amount: number;
   period: string;
@@ -10,5 +12,4 @@ export type Budget = {
   isActive: boolean;
   createdAt: string;
   updatedAt: string;
-  category?: { id: string; name: string };
 };

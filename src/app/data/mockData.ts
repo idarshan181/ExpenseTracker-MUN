@@ -83,6 +83,7 @@ const transactions = [
 const budgets: Budget[] = [
   {
     id: '1',
+    bname: 'Food Budget', // ✅ Added bname
     userId: 'user_01',
     categoryId: '1',
     currency: 'CAD',
@@ -97,6 +98,7 @@ const budgets: Budget[] = [
   },
   {
     id: '2',
+    bname: 'Shopping Budget', // ✅ Added bname
     userId: 'user_01',
     categoryId: '4',
     currency: 'CAD',
@@ -111,6 +113,7 @@ const budgets: Budget[] = [
   },
   {
     id: '3',
+    bname: 'Utilities Budget', // ✅ Added bname
     userId: 'user_01',
     categoryId: '2',
     currency: 'CAD',
@@ -125,6 +128,7 @@ const budgets: Budget[] = [
   },
   {
     id: '4',
+    bname: 'Housing Budget', // ✅ Added bname
     userId: 'user_01',
     categoryId: '14',
     currency: 'CAD',

@@ -13,8 +13,26 @@ import { format } from 'date-fns';
 import { ArrowUpDown, MoreHorizontal, Pencil } from 'lucide-react';
 import { useState } from 'react';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from '../ui/dropdown-menu';
+import AddBudgetDialog from './AddBudgetDialog';
+import { DeleteBudgetButton } from './DeleteBudgetButton';
 
 export const BudgetColumn: ColumnDef<Budget>[] = [
+  {
+    accessorKey: 'bname',
+    header: ({ column }) => (
+      <Button
+        variant="ghost"
+        className="flex items-center space-x-2 text-base font-semibold "
+        onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
+      >
+        <span>Name</span>
+        <ArrowUpDown className="size-5" />
+      </Button>
+    ),
+    cell: ({ row }) => (
+      <div className="text-base font-medium">{row.getValue('bname')}</div>
+    ),
+  },
   {
     accessorKey: 'amount',
     header: () => <div className="text-base font-semibold">Amount</div>,
@@ -96,10 +114,10 @@ export const BudgetColumn: ColumnDef<Budget>[] = [
   {
     id: 'actions',
     cell: ({ row }) => {
-      const category = row.original;
+      const budget = row.original;
 
       const [isMenuOpen, setIsMenuOpen] = useState(false);
-      // const [isDialogOpen, setIsDialogOpen] = useState(false);
+      const [isDialogOpen, setIsDialogOpen] = useState(false);
 
       return (
         <>
@@ -114,8 +132,8 @@ export const BudgetColumn: ColumnDef<Budget>[] = [
               <DropdownMenuLabel>Actions</DropdownMenuLabel>
               <DropdownMenuItem
                 onClick={() => {
-                  console.log(`category`, category);
-                  // setIsDialogOpen(true); // Open the edit dialog
+                  console.log(`budget`, budget);
+                  setIsDialogOpen(true); // Open the edit dialog
                   setIsMenuOpen(false); // Close the dropdown
                 }}
               >
@@ -124,16 +142,16 @@ export const BudgetColumn: ColumnDef<Budget>[] = [
               </DropdownMenuItem>
               <DropdownMenuSeparator />
               <DropdownMenuItem className="w-full p-0" asChild>
-                {/* <DeleteCategoryButton categoryId={category.id} closeDropDown={() => setIsMenuOpen(false)} /> */}
+                <DeleteBudgetButton budgetId={budget.id} closeDropDown={() => setIsMenuOpen(false)} />
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
           {/* Transaction Edit Dialog */}
-          {/* <AddCategoriesDialog
-            category={category}
+          <AddBudgetDialog
+            budget={budget}
             isOpen={isDialogOpen}
             setIsOpen={setIsDialogOpen}
-          /> */}
+          />
         </>
       );
     },

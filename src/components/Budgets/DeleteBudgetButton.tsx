@@ -8,7 +8,7 @@ import { useState } from 'react';
 import { toast } from 'sonner';
 import { ConfirmDialog } from '../general/ConfirmDialog';
 
-export function DeleteBudgetButton({ budgetId, closeDropDown }: { budgetId: number; closeDropDown?: () => void }) {
+export function DeleteBudgetButton({ budgetId, closeDropDown }: { budgetId: string; closeDropDown?: () => void }) {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const queryClient = useQueryClient();
 
