@@ -1,5 +1,4 @@
 import { Budget } from '@/types/budgets';
-import { Transaction } from '@/types/Transactions';
 import { TransactionStatus } from '../../../types/TransactionStatus';
 
 // Mock data
@@ -11,49 +10,6 @@ const monthlyStats = {
   balance: 2100,
   savings: 800,
 };
-
-const recentTransactions: Transaction[] = [
-  {
-    id: '1',
-    categoryId: '1',
-    createdAt: '2024-03-15',
-    description: 'Grocery Shopping',
-    category: { id: '1', name: 'Food' },
-    amount: -120.50,
-    source: 'Credit Card',
-    status: TransactionStatus.Completed,
-  },
-  {
-    id: '2',
-    categoryId: '2',
-    createdAt: '2024-03-16',
-    description: 'Gas Bill',
-    category: { id: '2', name: 'Utilities' },
-    amount: -50.00,
-    source: 'Bank Transfer',
-    status: TransactionStatus.Completed,
-  },
-  {
-    id: '3',
-    categoryId: '3',
-    createdAt: '2024-03-17',
-    description: 'Movie Tickets',
-    category: { id: '3', name: 'Entertainment' },
-    amount: -25.00,
-    source: 'Cash',
-    status: TransactionStatus.Completed,
-  },
-  {
-    id: '4',
-    categoryId: '4',
-    createdAt: '2024-03-18',
-    description: 'Book Purchase',
-    category: { id: '4', name: 'Shopping' },
-    amount: -30.00,
-    source: 'Credit Card',
-    status: TransactionStatus.Completed,
-  },
-];
 
 const transactions = [
   {
@@ -216,4 +172,4 @@ const monthlyTrend = [
   { month: 'Mar', income: 5200, expenses: 3100, savings: 2100 },
 ];
 
-export { budgetCard, budgets, expensesByCategory, monthlyStats, monthlyTrend, recentTransactions, topSpending, transactions };
+export { budgetCard, budgets, expensesByCategory, monthlyStats, monthlyTrend, topSpending, transactions };
