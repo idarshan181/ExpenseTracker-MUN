@@ -11,7 +11,7 @@ import { DateRange } from 'react-day-picker';
 export const applyDateFilter = <T extends Record<string, any>>(
   data: T[],
   dateRange: DateRange | undefined,
-  dateKey: keyof T, // Allow dynamic date key selection
+  dateKey: keyof T,
 ): T[] => {
   if (!dateRange?.from && !dateRange?.to) {
     return data;
@@ -23,14 +23,28 @@ export const applyDateFilter = <T extends Record<string, any>>(
       return false;
     }
 
-    const transactionDate = new Date(dateValue); // Convert to Date object
+    // Convert to Date object and normalize to the start of the day
+    const transactionDate = new Date(dateValue);
+    transactionDate.setHours(0, 0, 0, 0); // Normalize time
+
     if (Number.isNaN(transactionDate.getTime())) {
       return false;
     }
 
+    // Normalize dateRange values
+    const fromDate = dateRange.from ? new Date(dateRange.from) : null;
+    const toDate = dateRange.to ? new Date(dateRange.to) : null;
+
+    if (fromDate) {
+      fromDate.setHours(0, 0, 0, 0);
+    }
+    if (toDate) {
+      toDate.setHours(23, 59, 59, 999);
+    } // Include entire day
+
     return (
-      (!dateRange.from || transactionDate >= dateRange.from)
-      && (!dateRange.to || transactionDate <= dateRange.to)
+      (!fromDate || transactionDate >= fromDate)
+      && (!toDate || transactionDate <= toDate)
     );
   });
 };
