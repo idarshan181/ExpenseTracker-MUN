@@ -1,4 +1,3 @@
-/* eslint-disable no-console */
 /* eslint-disable react-hooks/rules-of-hooks */
 'use client';
 
@@ -27,18 +26,18 @@ const getPaymentIcon = (method?: string) => {
 // Define the columns for the DataTable
 export const TransactionColumns: ColumnDef<Transaction>[] = [
   {
-    accessorKey: 'createdAt',
+    accessorKey: 'transactionDate',
     header: ({ column }) => (
       <Button
         variant="ghost"
         className="flex items-center space-x-2 text-base font-semibold"
         onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
       >
-        <span>Date</span>
+        <span>Trans. Date</span>
         <ArrowUpDown className="size-4" />
       </Button>
     ),
-    cell: ({ row }) => <div className="text-base font-medium">{format(row.getValue('createdAt'), 'dd MMMM, yyyy')}</div>,
+    cell: ({ row }) => <div className="text-base font-medium">{format(row.getValue('transactionDate'), 'dd MMMM, yyyy')}</div>,
   },
   {
     accessorKey: 'description',
@@ -119,7 +118,6 @@ export const TransactionColumns: ColumnDef<Transaction>[] = [
               <DropdownMenuLabel>Actions</DropdownMenuLabel>
               <DropdownMenuItem
                 onClick={() => {
-                  console.log(`transaction`, transaction);
                   setIsDialogOpen(true); // Open the edit dialog
                   setIsMenuOpen(false); // Close the dropdown
                 }}

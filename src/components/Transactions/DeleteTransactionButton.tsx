@@ -1,4 +1,3 @@
-/* eslint-disable no-console */
 'use client';
 
 import { deleteTransactionById } from '@/app/actions/transactionActions';
@@ -15,7 +14,6 @@ export function DeleteTransactionButton({ transactionId, closeDropDown }: { tran
 
   const mutation = useMutation({
     mutationFn: async () => {
-      console.log(transactionId);
       const response = await deleteTransactionById(transactionId);
       if (response.error) {
         throw new Error(response.error);

@@ -84,8 +84,6 @@ export function TransactionTable<TData extends Record<string, any>, TValue>({
     },
   });
 
-  // Filter transactions by date range
-
   return (
     <div className=" rounded-lg border border-gray-200 p-2 shadow">
 
@@ -176,20 +174,19 @@ export function TransactionTable<TData extends Record<string, any>, TValue>({
         </TableBody>
       </Table>
 
-      {data.length > pageSize && (
-        <div className="flex items-center justify-end">
-          <CustomPagination
-            totalPages={table.getPageCount()}
-            currentPage={pageIndex + 1} // Adjust for 1-based indexing
-            setCurrentPage={page => table.setPageIndex(page - 1)}
-            rowsPerPage={pageSize}
-            setRowsPerPage={(size) => {
-              table.setPageSize(size);
-              setPageSize(size);
-            }}
-          />
-        </div>
-      )}
+      <div className="flex items-center justify-end">
+        <CustomPagination
+          totalPages={table.getPageCount()}
+          currentPage={pageIndex + 1} // Adjust for 1-based indexing
+          setCurrentPage={page => table.setPageIndex(page - 1)}
+          rowsPerPage={pageSize}
+          setRowsPerPage={(size) => {
+            table.setPageSize(size);
+            setPageSize(size);
+          }}
+        />
+      </div>
+
     </div>
   );
 }

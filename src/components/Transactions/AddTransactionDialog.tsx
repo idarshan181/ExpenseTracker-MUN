@@ -27,7 +27,7 @@ export default function AddTransactionDialog({ refreshTransaction, transaction =
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogContent className="w-full max-w-xl">
         <DialogHeader>
-          <DialogTitle>{transaction ? 'Edit Transcation' : 'Add New Transacation'}</DialogTitle>
+          <DialogTitle>{transaction ? 'Edit Transaction' : 'Add New Transacation'}</DialogTitle>
           <DialogDescription>
             {transaction ? 'Update the transaction details' : 'Record a new expense or income'}
           </DialogDescription>
