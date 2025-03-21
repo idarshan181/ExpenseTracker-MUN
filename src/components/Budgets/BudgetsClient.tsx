@@ -1,4 +1,3 @@
-/* eslint-disable no-console */
 'use client';
 import { budgetCard } from '@/app/data/mockData';
 
@@ -23,7 +22,6 @@ export default function BudgetsClient() {
     return <div>Loading...</div>;
   }
 
-  console.log('budgets', budgets);
   return (
     <div className="space-y-6">
 

@@ -1,4 +1,3 @@
-/* eslint-disable no-console */
 /* eslint-disable react-hooks/rules-of-hooks */
 'use client';
 
@@ -132,7 +131,6 @@ export const BudgetColumn: ColumnDef<Budget>[] = [
               <DropdownMenuLabel>Actions</DropdownMenuLabel>
               <DropdownMenuItem
                 onClick={() => {
-                  console.log(`budget`, budget);
                   setIsDialogOpen(true); // Open the edit dialog
                   setIsMenuOpen(false); // Close the dropdown
                 }}
