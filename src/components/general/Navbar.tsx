@@ -52,7 +52,6 @@
 
 'use client';
 
-import Logo from '@/public/logos/logo.png';
 import { useSession } from 'next-auth/react';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -75,7 +74,7 @@ export default function Navbar() {
           )
         : (
             <Link href="/" className="flex items-center gap-2">
-              <Image src={Logo} alt="logo" width={50} height={50} />
+              <Image src="/logos/logo.png" alt="logo" width={50} height={50} />
               <h1 className="text-2xl font-bold">
                 ExpenseVision
                 <span className="text-primary"> MUN</span>
