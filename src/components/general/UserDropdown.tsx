@@ -1,5 +1,6 @@
 import { handleSignOut } from '@/app/actions/actions';
 import { ChevronDown, Heart, Layers2, LogOut, Settings } from 'lucide-react';
+import { signOut } from 'next-auth/react';
 import Link from 'next/link';
 import { useMemo } from 'react';
 import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar';
@@ -66,7 +67,11 @@ export default function UserDropdown({ email, name, image }: iAppProps) {
         </DropdownMenuGroup>
         <DropdownMenuSeparator />
         <DropdownMenuItem>
-          <form action={handleSignOut}>
+          <form action={async () => {
+            await handleSignOut();
+            await signOut({ redirect: true, redirectTo: '/' });
+          }}
+          >
             <button type="submit" className="flex w-full items-center gap-2">
               <LogOut size={16} strokeWidth={2} className="opacity-60" />
               <span>Log out</span>

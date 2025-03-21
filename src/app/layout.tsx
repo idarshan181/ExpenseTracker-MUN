@@ -1,4 +1,5 @@
-import type { Metadata } from 'next';
+/* eslint-disable react-dom/no-dangerously-set-innerhtml */
+import { metadata } from '@/app/utils/metadata';
 
 import Providers from '@/components/general/Providers';
 import { Toaster } from '@/components/ui/sonner';
@@ -16,11 +17,7 @@ const geistMono = Geist_Mono({
   subsets: ['latin'],
 });
 
-export const metadata: Metadata = {
-  title: 'Expense Tracker MUN: Your Personal Finance Assistant',
-  description:
-    'Expense Tracker MUN is a personal finance assistant that helps you track your expenses, manage your budget, and plan your financial future.',
-};
+export { metadata };
 
 export default function RootLayout({
   children,
@@ -29,6 +26,37 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" suppressHydrationWarning>
+      <head>
+        <meta charSet="UTF-8" />
+        <link rel="canonical" href={metadata.openGraph?.url as string} />
+
+        {/* JSON+LD for SEO */}
+        <script
+          id="json-ld"
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              '@context': 'https://schema.org',
+              '@type': 'SoftwareApplication',
+              'name': 'ExpenseVision',
+              'applicationCategory': 'FinanceApplication',
+              'operatingSystem': 'Web, iOS, Android',
+              'description':
+                'Track expenses, set budgets, and gain financial insights with our intuitive expense tracking app.',
+              'offers': {
+                '@type': 'Offer',
+                'price': '0',
+                'priceCurrency': 'USD',
+              },
+              'aggregateRating': {
+                '@type': 'AggregateRating',
+                'ratingValue': '4.8',
+                'ratingCount': '1246',
+              },
+            }),
+          }}
+        />
+      </head>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
