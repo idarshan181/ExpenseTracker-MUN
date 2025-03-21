@@ -55,13 +55,15 @@ export default function AddTransactionForm({
     resolver: zodResolver(transactionSchema),
     defaultValues: {
       transactionType: transaction?.transactionType ?? 'expense',
-      amount: 0, // Default to 0 instead of undefined
+      amount: transaction?.amount !== undefined ? Number(transaction.amount) : undefined,
       categoryId: transaction?.categoryId
         ? String(transaction.categoryId)
         : transaction?.category?.id
           ? String(transaction.category.id)
           : undefined,
-      transactionDate: new Date(), // Ensure date is always set
+      transactionDate: transaction?.transactionDate
+        ? new Date(transaction.transactionDate).toISOString() // Ensure Date object
+        : new Date().toISOString(),
       description: transaction?.description ?? '',
       source: transaction?.source ?? undefined,
     },
@@ -69,7 +71,13 @@ export default function AddTransactionForm({
 
   useEffect(() => {
     if (transaction) {
-      form.reset(transaction);
+      form.reset({
+        ...transaction,
+        amount: Number(transaction.amount), // Ensure amount is a number
+        transactionDate: transaction.transactionDate
+          ? new Date(transaction.transactionDate).toISOString() // Convert to ISO format
+          : new Date().toISOString(), // Default to current date
+      });
     }
   }, [transaction, form]);
 
@@ -92,13 +100,19 @@ export default function AddTransactionForm({
 
       const method = transaction ? 'PUT' : 'POST';
 
+      const formattedData = {
+        ...data,
+        amount: Number(data.amount),
+        transactionDate: new Date(data.transactionDate).toISOString(),
+      };
+
       const response = await fetch(url, {
         method,
         headers: {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${session.user.backendToken}`,
         },
-        body: JSON.stringify(data),
+        body: JSON.stringify(formattedData),
       });
 
       const result = await response.json();
@@ -119,6 +133,8 @@ export default function AddTransactionForm({
 
       await queryClient.invalidateQueries({ queryKey: ['categories'] });
       await queryClient.refetchQueries({ queryKey: ['categories'] });
+      await queryClient.invalidateQueries({ queryKey: ['transactions'] });
+      await queryClient.refetchQueries({ queryKey: ['transactions'] });
 
       form.reset();
 
@@ -137,7 +153,25 @@ export default function AddTransactionForm({
     <Form {...form}>
       <form
         className="w-full space-y-4"
-        onSubmit={form.handleSubmit(data => mutation.mutate(data))}
+        onSubmit={(e) => {
+          e.preventDefault(); // Prevents full page reload
+
+          form.handleSubmit(
+            (data) => {
+              // Format Data Correctly
+              const formattedData = {
+                ...data,
+                amount: Number(data.amount), // Ensure amount is a number
+                transactionDate: new Date(data.transactionDate).toISOString(), // Ensure ISO Date format
+              };
+
+              mutation.mutate(formattedData);
+            },
+            (errors) => {
+              console.error('❌ Validation Errors:', errors);
+            },
+          )();
+        }}
       >
         <FormField
           control={form.control}
@@ -188,8 +222,9 @@ export default function AddTransactionForm({
                     placeholder="0.00"
                     className="pl-8"
                     onChange={(e) => {
-                      const value = e.target.value;
-                      field.onChange(value ? Number(value) : ''); // Convert to number
+                      const raw = e.target.value;
+                      const value = Number.parseFloat(raw);
+                      field.onChange(raw === '' ? '' : Number.isNaN(value) ? '' : value);
                     }}
                   />
                 </div>
@@ -210,18 +245,9 @@ export default function AddTransactionForm({
                     <FormControl>
                       <Button
                         variant="outline"
-                        className={cn(
-                          'w-[240px] pl-3 text-left font-normal',
-                          !field.value && 'text-muted-foreground',
-                        )}
+                        className={cn('w-[240px] pl-3 text-left font-normal', !field.value && 'text-muted-foreground')}
                       >
-                        {field.value
-                          ? (
-                              format(field.value, 'PPP')
-                            )
-                          : (
-                              <span>Pick a date</span>
-                            )}
+                        {field.value ? format(new Date(field.value), 'PPP') : <span>Pick a date</span>}
                         <CalendarIcon className="ml-auto size-4 opacity-50" />
                       </Button>
                     </FormControl>
@@ -229,10 +255,9 @@ export default function AddTransactionForm({
                   <PopoverContent className="w-auto p-0" align="start">
                     <Calendar
                       mode="single"
-                      selected={field.value}
-                      onSelect={field.onChange}
-                      disabled={date =>
-                        date > new Date() || date < new Date('1900-01-01')}
+                      selected={field.value ? new Date(field.value) : undefined} // Convert string to Date object
+                      onSelect={date => field.onChange(date?.toISOString() || new Date().toISOString())} // Store as ISO
+                      disabled={date => date > new Date() || date < new Date('1900-01-01')}
                       initialFocus
                     />
                   </PopoverContent>
