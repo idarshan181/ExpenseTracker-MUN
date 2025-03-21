@@ -213,9 +213,13 @@ export default function AddCategoriesForm({
                     Creating...
                   </>
                 )
-              : (
-                  <>Create Category</>
-                )}
+              : category
+                ? (
+                    'Update Category'
+                  )
+                : (
+                    'Create Category'
+                  )}
           </Button>
 
           <Button

@@ -28,6 +28,7 @@ import {
 } from '@tanstack/react-table';
 import { format } from 'date-fns';
 import { CalendarIcon, Search } from 'lucide-react';
+import { usePathname } from 'next/navigation';
 import { useState } from 'react';
 import { DateRange } from 'react-day-picker';
 
@@ -44,6 +45,8 @@ export function TransactionTable<TData extends Record<string, any>, TValue>({
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
   const [globalFilter, setGlobalFilter] = useState(''); // Global search filter except date range
   const [dateRange, setDateRange] = useState<DateRange | undefined>(undefined);
+
+  const pathname = usePathname();
 
   const [pageSize, setPageSize] = useState(5);
   const [pageIndex, setPageIndex] = useState(0);
@@ -174,18 +177,20 @@ export function TransactionTable<TData extends Record<string, any>, TValue>({
         </TableBody>
       </Table>
 
-      <div className="flex items-center justify-end">
-        <CustomPagination
-          totalPages={table.getPageCount()}
-          currentPage={pageIndex + 1} // Adjust for 1-based indexing
-          setCurrentPage={page => table.setPageIndex(page - 1)}
-          rowsPerPage={pageSize}
-          setRowsPerPage={(size) => {
-            table.setPageSize(size);
-            setPageSize(size);
-          }}
-        />
-      </div>
+      {pathname.includes('/transactions') && (
+        <div className="flex items-center justify-end">
+          <CustomPagination
+            totalPages={table.getPageCount()}
+            currentPage={pageIndex + 1} // Adjust for 1-based indexing
+            setCurrentPage={page => table.setPageIndex(page - 1)}
+            rowsPerPage={pageSize}
+            setRowsPerPage={(size) => {
+              table.setPageSize(size);
+              setPageSize(size);
+            }}
+          />
+        </div>
+      )}
 
     </div>
   );

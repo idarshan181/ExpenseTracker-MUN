@@ -9,7 +9,7 @@ import { TransactionColumns } from './TransactionsColumns';
 import { TransactionTable } from './TransactionTable';
 
 export default function TransactionsClient() {
-  const { data: transactions, isLoading, refetch } = useTransactions();
+  const { data: transactions, isLoading, refetch } = useTransactions(0);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
 
   if (isLoading) {
