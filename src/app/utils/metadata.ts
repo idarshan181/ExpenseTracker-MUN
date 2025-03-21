@@ -18,7 +18,7 @@ export const metadata: Metadata = {
     siteName: SITE_NAME,
     images: [
       {
-        url: `${SITE_URL}/og-image.jpg`,
+        url: `${SITE_URL}/og-image.webp`,
         width: 1200,
         height: 630,
         alt: 'ExpenseVision - Modern Expense Tracking App',
@@ -32,7 +32,7 @@ export const metadata: Metadata = {
     title: 'ExpenseVision | Modern Expense Tracking App',
     description:
       'Track expenses, set budgets, and gain financial insights with our intuitive expense tracking app.',
-    images: [`${SITE_URL}/og-image.jpg`],
+    images: [`${SITE_URL}/og-image.webp`],
   },
   alternates: {
     canonical: SITE_URL,

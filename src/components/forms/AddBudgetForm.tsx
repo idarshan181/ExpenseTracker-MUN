@@ -96,7 +96,7 @@ export default function AddBudgetForm({
       }
 
       const url = budget
-        ? `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/budget/${budget.id}/`
+        ? `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/budget/${budget.id}`
         : `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/budget/`;
 
       const method = budget ? 'PUT' : 'POST';

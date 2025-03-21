@@ -87,7 +87,7 @@ export default function AddTransactionForm({
       }
 
       const url = transaction
-        ? `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/transactions/${transaction.id}/`
+        ? `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/transactions/${transaction.id}`
         : `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/transactions/`;
 
       const method = transaction ? 'PUT' : 'POST';

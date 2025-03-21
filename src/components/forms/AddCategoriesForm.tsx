@@ -76,7 +76,7 @@ export default function AddCategoriesForm({
       }
 
       const url = category
-        ? `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/categories/${category.id}/`
+        ? `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/categories/${category.id}`
         : `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/categories/`;
 
       const method = category ? 'PUT' : 'POST';
