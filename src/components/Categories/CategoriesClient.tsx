@@ -1,4 +1,3 @@
-/* eslint-disable no-console */
 'use client';
 
 import { useCategories } from '@/hooks/useCategories';
@@ -15,8 +14,6 @@ export default function CategoriesClient() {
   if (isLoading) {
     return <div>Loading...</div>;
   }
-
-  console.log('categories in client', categories);
 
   return (
     <div className="space-y-6">

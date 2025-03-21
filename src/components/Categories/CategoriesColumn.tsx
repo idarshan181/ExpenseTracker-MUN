@@ -1,4 +1,3 @@
-/* eslint-disable no-console */
 /* eslint-disable react-hooks/rules-of-hooks */
 'use client';
 
@@ -127,7 +126,6 @@ export const CategoriesColumn: ColumnDef<Category>[] = [
               <DropdownMenuLabel>Actions</DropdownMenuLabel>
               <DropdownMenuItem
                 onClick={() => {
-                  console.log(`category`, category);
                   setIsDialogOpen(true); // Open the edit dialog
                   setIsMenuOpen(false); // Close the dropdown
                 }}
