@@ -1,9 +1,10 @@
 'use client';
 import { ArrowRight } from 'lucide-react';
 import Image from 'next/image';
+import Link from 'next/link';
 import { useState } from 'react';
 import { AnimateInView } from '../ui/animation';
-import { Button } from '../ui/button';
+import { Button, buttonVariants } from '../ui/button';
 
 const HeroSection = () => {
   const [imageSrc, setImageSrc] = useState('/app-screenshot.png');
@@ -40,10 +41,10 @@ const HeroSection = () => {
           </AnimateInView>
 
           <AnimateInView animation="fade-up" delay={300} className="flex flex-col justify-center gap-4 sm:flex-row">
-            <Button size="lg" className="group" onClick={() => document.getElementById('sign-up')?.scrollIntoView({ behavior: 'smooth' })}>
+            <Link href="/login" className={buttonVariants({ size: 'lg' })}>
               Get Started
               <ArrowRight className="ml-2 size-4 transition-transform group-hover:translate-x-1" />
-            </Button>
+            </Link>
             <Button size="lg" variant="outline">
               Learn More
             </Button>

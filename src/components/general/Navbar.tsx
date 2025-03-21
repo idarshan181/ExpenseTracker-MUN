@@ -85,6 +85,14 @@ export default function Navbar() {
 
       {/* Right Side: Theme Toggle & User/Login */}
       <div className="hidden items-center gap-5 md:flex">
+
+        {session?.user && (pathname === '' || pathname
+        === '/'
+        ) && (
+          <Link href="/dashboard" className={buttonVariants({ variant: 'default', size: 'lg' })}>
+            Manage Your Finance
+          </Link>
+        )}
         <ThemeToggle />
         {session?.user
           ? (
