@@ -1,11 +1,11 @@
-# Expense Tracker
+# ExpenseVision - Expense Tracker
 
 <!-- A web-based application that helps users efficiently track their income and expenses, providing insights, categorized spending analysis, and transaction tracking with a modern and intuitive interface. -->
-## **Expense Tracker MUN – Smart Financial Management Made Simple**
+## **ExpenseVision – Smart Financial Management Made Simple**
 
-**Expense Tracker MUN** is a **web-based application** designed to help users efficiently manage their finances by tracking income, expenses, and spending habits in a structured and intuitive way. Whether it's daily expenses, monthly bills, or long-term savings, this tool provides **real-time insights, categorized spending analysis, and seamless transaction tracking** to ensure users stay financially aware and in control.
+**ExpenseVision** is a **web-based application** designed to help users efficiently manage their finances by tracking income, expenses, and spending habits in a structured and intuitive way. Whether it's daily expenses, monthly bills, or long-term savings, this tool provides **real-time insights, categorized spending analysis, and seamless transaction tracking** to ensure users stay financially aware and in control.
 
-With features like **automated transaction logging, smart budgeting tools, and goal-based financial planning**, **Expense Tracker MUN** makes managing money effortless. Users can visualize their spending trends, set savings goals, and track their progress without the hassle of manual calculations. The platform is built with a user-friendly interface, ensuring a smooth experience while prioritizing data privacy and security. Whether you're an individual looking to improve your personal finance habits or someone managing shared expenses, **Expense Tracker MUN** simplifies the process, helping you **spend smarter, save better, and plan for the future with confidence**.
+With features like **automated transaction logging, smart budgeting tools, and goal-based financial planning**, **ExpenseVision** makes managing money effortless. Users can visualize their spending trends, set savings goals, and track their progress without the hassle of manual calculations. The platform is built with a user-friendly interface, ensuring a smooth experience while prioritizing data privacy and security. Whether you're an individual looking to improve your personal finance habits or someone managing shared expenses, **ExpenseVision** simplifies the process, helping you **spend smarter, save better, and plan for the future with confidence**.
 
 ## 📸 Screenshots
 

@@ -28,14 +28,15 @@ export default function ClientSidebar() {
       <SidebarContent>
         <div id="sidebar" className="flex h-full flex-col">
           <div className="p-4">
-            <h1 className={cn(
-              'font-bold transition-all duration-300',
-              state === 'collapsed' ? 'text-xl text-center' : 'text-2xl',
-            )}
-            >
-              {state === 'collapsed' ? 'ET' : 'ExpenseTracker'}
-            </h1>
-
+            <Link href="/" className="flex items-center gap-2">
+              <h1 className={cn(
+                'font-bold transition-all duration-300',
+                state === 'collapsed' ? 'text-xl text-center' : 'text-2xl',
+              )}
+              >
+                {state === 'collapsed' ? 'EV' : 'ExpenseVision'}
+              </h1>
+            </Link>
           </div>
 
           <SidebarGroup>
