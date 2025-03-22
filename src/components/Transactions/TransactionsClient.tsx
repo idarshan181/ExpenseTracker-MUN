@@ -3,12 +3,15 @@
 import { Button } from '@/components/ui/button';
 import { useTransactions } from '@/hooks/useTransactions';
 import { Download, Plus } from 'lucide-react';
+import { useSession } from 'next-auth/react';
 import { useState } from 'react';
+import { exportPDF } from '../general/GeneratePDF';
 import AddTransactionDialog from './AddTransactionDialog';
 import { TransactionColumns } from './TransactionsColumns';
 import { TransactionTable } from './TransactionTable';
 
 export default function TransactionsClient() {
+  const { data: session } = useSession();
   const { data: transactions, isLoading, refetch } = useTransactions(0);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
 
@@ -22,7 +25,14 @@ export default function TransactionsClient() {
       <div className="flex items-center justify-between">
         <h1 className="text-2xl font-bold">Transactions</h1>
         <div className="flex items-center space-x-4 ">
-          <Button variant="default" className="flex items-center rounded-lg border bg-green-500 px-4 py-2 text-white hover:bg-green-600">
+          <Button
+            variant="default"
+            onClick={() => exportPDF({
+              data: transactions,
+              customerName: session?.user?.name || 'Unknown User',
+            })}
+            className="flex items-center rounded-lg border bg-green-500 px-4 py-2 text-white hover:bg-green-600"
+          >
             <Download className="mr-2 size-4" />
             Export
           </Button>
