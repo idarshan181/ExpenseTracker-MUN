@@ -7,7 +7,7 @@ import { AnimateInView } from '../ui/animation';
 import { Button, buttonVariants } from '../ui/button';
 
 const HeroSection = () => {
-  const [imageSrc, setImageSrc] = useState('/app-screenshot.png');
+  const [imageSrc, setImageSrc] = useState('/screenshots/ExpenseVision.avif');
 
   return (
     <section className="relative overflow-hidden pb-20 pt-36 md:pb-32">
@@ -21,7 +21,7 @@ const HeroSection = () => {
       <div className="container mx-auto px-4 sm:px-6">
         <div className="mx-auto mb-12 max-w-3xl text-center md:mb-20">
           <AnimateInView animation="fade-up" className="mb-4">
-            <span className="inline-block rounded-full bg-primary/10 px-3 py-1 text-xs font-medium text-primary">
+            <span className="inline-block rounded-full bg-primary/90 px-3 py-1 text-xs font-medium text-white dark:text-white">
               Simplify Your Finances
             </span>
           </AnimateInView>
@@ -51,14 +51,14 @@ const HeroSection = () => {
           </AnimateInView>
         </div>
 
-        <AnimateInView animation="blur-in" delay={500} className="relative mx-auto max-w-4xl">
+        <AnimateInView animation="scale-in" delay={500} className="relative mx-auto max-w-4xl">
           <div className="relative rounded-2xl p-2 shadow-lg">
             <div className="relative aspect-[16/9] overflow-hidden rounded-xl">
               <Image
                 src={imageSrc}
                 alt="ExpenseVision Dashboard"
-                width={600}
-                height={400}
+                width={1024}
+                height={800}
                 className="h-auto w-full object-cover"
                 onError={() => setImageSrc('https://placehold.co/1200x675/e4eeff/0066ff.png?text=ExpenseVision+Dashboard')}
               />

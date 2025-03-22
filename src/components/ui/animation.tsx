@@ -1,7 +1,7 @@
 "use client";
 
 import { cn } from "@/lib/utils";
-import { motion, useInView } from "motion/react";
+import { motion, useInView } from "framer-motion";
 import { useRef } from "react";
 
 interface AnimateInViewProps {
@@ -12,7 +12,7 @@ interface AnimateInViewProps {
     | "fade-in"
     | "fade-up"
     | "fade-down"
-    | "blur-in"
+    | "scale-in"
     | "float"
     | "float-slow"
     | "none";
@@ -32,16 +32,20 @@ export const AnimateInView = ({
   const isInView = useInView(ref, { once, amount: threshold });
 
   const variants = {
-    hidden: { 
-      opacity: 0, 
-      y: animation === "fade-up" ? 30 : animation === "fade-down" ? -30 : 0, 
-      filter: animation === "blur-in" ? "blur(10px)" : "none" 
+    hidden: {
+      opacity: 0,
+      y: animation === "fade-up" ? 30 : animation === "fade-down" ? -30 : 0,
+      scale: animation === "scale-in" ? 0.95 : 1,
     },
-    visible: { 
-      opacity: 1, 
-      y: 0, 
-      filter: "none", 
-      transition: { delay: delay / 1000, duration: 0.5, easing: "ease-out" } 
+    visible: {
+      opacity: 1,
+      y: 0,
+      scale: 1,
+      transition: {
+        delay: delay / 1000,
+        duration: 0.5,
+        ease: "easeOut",
+      },
     },
   };
 
