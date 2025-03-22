@@ -1,3 +1,4 @@
+/* eslint-disable react/no-array-index-key */
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 
@@ -72,7 +73,7 @@ const CTASection = () => {
 
               <div className="relative hidden md:block">
                 <div className="absolute inset-0 bg-primary/90">
-                  <div className="absolute inset-0 bg-[url('/app-screenshot.png')] bg-cover bg-center opacity-20 mix-blend-overlay"></div>
+                  <div className="absolute inset-0 bg-cover bg-center opacity-20 mix-blend-overlay"></div>
                 </div>
                 <div className="relative flex h-full flex-col items-center justify-center p-12 text-white">
                   <AnimateInView animation="fade-up">
