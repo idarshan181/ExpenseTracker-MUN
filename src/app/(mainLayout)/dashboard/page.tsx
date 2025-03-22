@@ -1,41 +1,22 @@
-import FinancialInsights from '@/components/Dashboard/FinancialInsights/FinancialInsights';
-import TransactionsInsight from '@/components/Dashboard/TransactionsInsight';
-import QuickStatCard from '@/components/general/QuickStatCard';
-import { monthlyStats } from '../../data/mockData';
+import { getQueryClient } from '@/app/utils/getQueryClient';
+import DashboardClient from '@/components/Dashboard/DashboardClient';
+import { dehydrate, HydrationBoundary } from '@tanstack/react-query';
+import { Metadata } from 'next';
 import { requireUser } from '../../utils/requireUser';
+
+export const metadata: Metadata = {
+  title: 'Dashboard | Expense Vision',
+  description: 'Analyze your financial dashboard',
+};
 
 export default async function DashboardHome() {
   await requireUser();
 
+  const queryClient = getQueryClient();
+
   return (
-    <div className="space-y-6">
-      <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-4">
-        <QuickStatCard
-          title="Monthly Income"
-          amount={monthlyStats.income}
-          previousAmount={monthlyStats.previousIncome}
-          type="income"
-        />
-        <QuickStatCard
-          title="Monthly Expenses"
-          amount={monthlyStats.expenses}
-          previousAmount={monthlyStats.previousExpenses}
-          type="expense"
-        />
-        <QuickStatCard
-          title="Available Balance"
-          amount={monthlyStats.balance}
-          type="balance"
-        />
-        <QuickStatCard
-          title="Monthly Savings"
-          amount={monthlyStats.savings}
-          percentage={(monthlyStats.savings / monthlyStats.income) * 100}
-          type="savings"
-        />
-      </div>
-      <TransactionsInsight />
-      <FinancialInsights />
-    </div>
+    <HydrationBoundary state={dehydrate(queryClient)}>
+      <DashboardClient />
+    </HydrationBoundary>
   );
 }
