@@ -5,10 +5,6 @@ export const fetchSpendingByCategory = async () => {
   const user = await requireUser();
   const { backendToken } = user;
 
-  if (!backendToken) {
-    return;
-  }
-
   try {
     const response = await fetch(
       `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/finance/expense-by-category/`,
@@ -36,10 +32,6 @@ export const fetchSpendingByCategory = async () => {
 export const fetchTransactionsTrend = async () => {
   const user = await requireUser();
   const { backendToken } = user;
-
-  if (!backendToken) {
-    return;
-  }
 
   try {
     const response = await fetch(
@@ -69,10 +61,6 @@ export const fetchOverallSummary = async () => {
   const user = await requireUser();
   const { backendToken } = user;
 
-  if (!backendToken) {
-    return;
-  }
-
   try {
     const response = await fetch(
       `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/finance/overall-summary`,
@@ -100,10 +88,6 @@ export const fetchOverallSummary = async () => {
 export const fetchTopSpendingByCategory = async () => {
   const user = await requireUser();
   const { backendToken } = user;
-
-  if (!backendToken) {
-    return;
-  }
 
   try {
     const response = await fetch(
