@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 // 'use client';
 
 // import Logo from '@/public/logos/logo.png';
@@ -56,6 +57,7 @@ import { useSession } from 'next-auth/react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
+import { useMemo } from 'react';
 import { buttonVariants } from '../ui/button';
 import { ThemeToggle } from './ThemeToggle';
 import TitleBar from './TitleBar';
@@ -65,10 +67,16 @@ export default function Navbar() {
   const { data: session } = useSession();
   const pathname = usePathname(); // Get the current route
 
+  const routes = ['/dashboard', '/transaction', '/budgets', '/reports', '/categories'];
+
+  const isMatchedRoute = useMemo(() => {
+    return routes.some(route => pathname.includes(route));
+  }, [pathname]); // recompute only when pathname changes
+
   return (
     <nav className="m-0 flex w-full items-center justify-between border-b border-gray-200 px-2 py-5">
       {/* Left Side: Logo or TitleBar based on session & route */}
-      {session?.user && pathname.includes('/dashboard')
+      {session?.user && isMatchedRoute
         ? (
             <TitleBar />
           )
