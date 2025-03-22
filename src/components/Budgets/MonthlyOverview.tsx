@@ -1,3 +1,5 @@
+'use client';
+
 import { formatCurrency } from '@/app/utils/formatCurrency';
 import { cn } from '@/lib/utils';
 import { Button } from '../ui/button';
@@ -5,14 +7,21 @@ import { Card, CardContent, CardHeader, CardTitle } from '../ui/card';
 import { Progress } from '../ui/progress';
 
 interface MonthlyOverviewProps {
-  data: { totalBudget: number; totalSpent: number; remaining: number; activeBudgets: number; exceededBudgets: number; nearLimitBudgets: number };
+  data: {
+    totalBudget: number;
+    totalSpent: number;
+    remaining: number;
+    activeBudgets: number;
+    exceededBudgets: number;
+    nearLimitBudgets: number;
+  };
 }
 
 export default function MonthlyOverview({ data }: MonthlyOverviewProps) {
   const progress = (data.totalSpent / data.totalBudget) * 100;
 
   return (
-    <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
+    <div className="mx-auto grid  grid-cols-1 justify-center gap-6 md:grid-cols-2 lg:grid-cols-3">
       <Card>
         <CardHeader className="pb-2">
           <CardTitle className="text-sm text-gray-500">Total Budget</CardTitle>
