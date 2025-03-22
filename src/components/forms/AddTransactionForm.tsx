@@ -1,3 +1,4 @@
+/* eslint-disable style/multiline-ternary */
 'use client';
 
 import { useCategories } from '@/hooks/useCategories';
@@ -10,11 +11,14 @@ import {
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { format } from 'date-fns';
-import { CalendarIcon } from 'lucide-react';
+import { CalendarIcon, XIcon } from 'lucide-react';
 import { useSession } from 'next-auth/react';
+import Image from 'next/image';
 import { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { toast } from 'sonner';
+
+import { UploadDropzone } from '../general/UploadThingsRe';
 import { Button } from '../ui/button';
 import { Calendar } from '../ui/calendar';
 import {
@@ -55,7 +59,10 @@ export default function AddTransactionForm({
     resolver: zodResolver(transactionSchema),
     defaultValues: {
       transactionType: transaction?.transactionType ?? 'expense',
-      amount: transaction?.amount !== undefined ? Number(transaction.amount) : undefined,
+      amount:
+        transaction?.amount !== undefined
+          ? Number(transaction.amount)
+          : undefined,
       categoryId: transaction?.categoryId
         ? String(transaction.categoryId)
         : transaction?.category?.id
@@ -66,6 +73,7 @@ export default function AddTransactionForm({
         : new Date().toISOString(),
       description: transaction?.description ?? '',
       source: transaction?.source ?? undefined,
+      attachmentUrl: transaction?.attachmentUrl ?? '',
     },
   });
 
@@ -128,7 +136,9 @@ export default function AddTransactionForm({
     },
     onSuccess: async () => {
       toast.success(
-        transaction ? 'Transaction Updated Successfully!' : 'Transaction Added Successfully!',
+        transaction
+          ? 'Transaction Updated Successfully!'
+          : 'Transaction Added Successfully!',
       );
 
       await queryClient.invalidateQueries({ queryKey: ['categories'] });
@@ -203,36 +213,93 @@ export default function AddTransactionForm({
             </FormItem>
           )}
         />
-        <FormField
-          control={form.control}
-          name="amount"
-          render={({ field }) => (
-            <FormItem className="space-y-3">
-              <FormLabel>Amount</FormLabel>
-              <FormControl>
-                <div className="relative">
-                  <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-muted-foreground">
-                    $
-                  </span>
-                  <Input
-                    {...field}
-                    min={0}
-                    type="number"
-                    step="0.1"
-                    placeholder="0.00"
-                    className="pl-8"
-                    onChange={(e) => {
-                      const raw = e.target.value;
-                      const value = Number.parseFloat(raw);
-                      field.onChange(raw === '' ? '' : Number.isNaN(value) ? '' : value);
-                    }}
-                  />
-                </div>
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+          <FormField
+            control={form.control}
+            name="amount"
+            render={({ field }) => (
+              <FormItem className="space-y-3">
+                <FormLabel>Amount</FormLabel>
+                <FormControl>
+                  <div className="relative">
+                    <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-muted-foreground">
+                      $
+                    </span>
+                    <Input
+                      {...field}
+                      min={0}
+                      type="number"
+                      step="0.1"
+                      placeholder="0.00"
+                      className="pl-8"
+                      onChange={(e) => {
+                        const raw = e.target.value;
+                        const value = Number.parseFloat(raw);
+                        field.onChange(
+                          raw === '' ? '' : Number.isNaN(value) ? '' : value,
+                        );
+                      }}
+                    />
+                  </div>
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="source"
+            render={({ field }) => (
+              <FormItem className="space-y-3">
+                <FormLabel>Account (Source)</FormLabel>
+                <Select
+                  value={field.value || ''}
+                  onValueChange={field.onChange}
+                >
+                  <FormControl>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select account">
+                        {field.value
+                          ? field.value.charAt(0).toUpperCase()
+                          + field.value.slice(1)
+                          : 'Select account'}
+                      </SelectValue>
+                    </SelectTrigger>
+                  </FormControl>
+                  <SelectContent>
+                    {transactionType === 'expense'
+                      ? (
+                          <>
+                            <SelectItem value="card">Card</SelectItem>
+                            <SelectItem value="cash">Cash</SelectItem>
+                            <SelectItem value="wallet">Wallet</SelectItem>
+                          </>
+                        )
+                      : transactionType === 'income'
+                        ? (
+                            <>
+                              <SelectItem value="cash">Cash</SelectItem>
+                              <SelectItem value="salary">Salary</SelectItem>
+                            </>
+                          )
+                        : (
+                            <>
+                              <SelectItem value="accounts">
+                                Between Accounts
+                              </SelectItem>
+                              <SelectItem value="savings">To Savings</SelectItem>
+                              <SelectItem value="investment">
+                                To Investment
+                              </SelectItem>
+                            </>
+                          )}
+                  </SelectContent>
+                </Select>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        </div>
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
           <FormField
             control={form.control}
@@ -245,9 +312,18 @@ export default function AddTransactionForm({
                     <FormControl>
                       <Button
                         variant="outline"
-                        className={cn('w-[240px] pl-3 text-left font-normal', !field.value && 'text-muted-foreground')}
+                        className={cn(
+                          'w-[240px] pl-3 text-left font-normal',
+                          !field.value && 'text-muted-foreground',
+                        )}
                       >
-                        {field.value ? format(new Date(field.value), 'PPP') : <span>Pick a date</span>}
+                        {field.value
+                          ? (
+                              format(new Date(field.value), 'PPP')
+                            )
+                          : (
+                              <span>Pick a date</span>
+                            )}
                         <CalendarIcon className="ml-auto size-4 opacity-50" />
                       </Button>
                     </FormControl>
@@ -256,8 +332,12 @@ export default function AddTransactionForm({
                     <Calendar
                       mode="single"
                       selected={field.value ? new Date(field.value) : undefined} // Convert string to Date object
-                      onSelect={date => field.onChange(date?.toISOString() || new Date().toISOString())} // Store as ISO
-                      disabled={date => date > new Date() || date < new Date('1900-01-01')}
+                      onSelect={date =>
+                        field.onChange(
+                          date?.toISOString() || new Date().toISOString(),
+                        )} // Store as ISO
+                      disabled={date =>
+                        date > new Date() || date < new Date('1900-01-01')}
                       initialFocus
                     />
                   </PopoverContent>
@@ -284,14 +364,18 @@ export default function AddTransactionForm({
                   <SelectContent>
                     {categories && categories.length > 0
                       ? (
-                          categories.map(({ id, name }: { id: string; name: string }) => (
-                            <SelectItem key={id} value={String(id)}>
-                              {name}
-                            </SelectItem>
-                          ))
+                          categories.map(
+                            ({ id, name }: { id: string; name: string }) => (
+                              <SelectItem key={id} value={String(id)}>
+                                {name}
+                              </SelectItem>
+                            ),
+                          )
                         )
                       : (
-                          <SelectItem disabled value="none">No categories available</SelectItem>
+                          <SelectItem disabled value="none">
+                            No categories available
+                          </SelectItem>
                         )}
                   </SelectContent>
                 </Select>
@@ -313,48 +397,54 @@ export default function AddTransactionForm({
             </FormItem>
           )}
         />
+
         <FormField
           control={form.control}
-          name="source"
-          render={({ field }) => (
-            <FormItem className="space-y-3">
-              <FormLabel>Account (Source)</FormLabel>
-              <Select value={field.value || ''} onValueChange={field.onChange}>
+          name="attachmentUrl"
+          render={({ field }) => {
+            const hasAttachment = field.value && field.value !== '';
+
+            return (
+              <FormItem>
+                <FormLabel>Transaction Receipt</FormLabel>
                 <FormControl>
-                  <SelectTrigger>
-                    <SelectValue placeholder="Select account">
-                      {field.value ? field.value.charAt(0).toUpperCase() + field.value.slice(1) : 'Select account'}
-                    </SelectValue>
-                  </SelectTrigger>
-                </FormControl>
-                <SelectContent>
-                  {transactionType === 'expense'
+                  {hasAttachment
                     ? (
-                        <>
-                          <SelectItem value="card">Card</SelectItem>
-                          <SelectItem value="cash">Cash</SelectItem>
-                          <SelectItem value="wallet">Wallet</SelectItem>
-                        </>
-                      )
-                    : transactionType === 'income'
-                      ? (
-                          <>
-                            <SelectItem value="cash">Cash</SelectItem>
-                            <SelectItem value="salary">Salary</SelectItem>
-                          </>
-                        )
-                      : (
-                          <>
-                            <SelectItem value="accounts">Between Accounts</SelectItem>
-                            <SelectItem value="savings">To Savings</SelectItem>
-                            <SelectItem value="investment">To Investment</SelectItem>
-                          </>
-                        )}
-                </SelectContent>
-              </Select>
-              <FormMessage />
-            </FormItem>
-          )}
+                        <div className="relative w-fit">
+                          <Image
+                            src={field.value ?? ''}
+                            alt="Transaction Receipt"
+                            width={300}
+                            height={150}
+                            className="rounded-lg"
+                          />
+                          <Button
+                            type="button"
+                            variant="destructive"
+                            size="icon"
+                            className="absolute -right-4 -top-2"
+                            onClick={() => field.onChange('')}
+                          >
+                            <XIcon className="size-4" />
+                          </Button>
+                        </div>
+                      ) : (
+                        <UploadDropzone
+                          endpoint="imageUploader"
+                          onClientUploadComplete={(res) => {
+                            field.onChange(res[0].ufsUrl); // or res[0].url
+                          }}
+                          onUploadError={(error) => {
+                            console.error('❌ Upload error:', error);
+                          }}
+                          className="h-fit border border-dashed border-gray-300 p-4"
+                        />
+                      )}
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            );
+          }}
         />
 
         <div className="flex items-center gap-x-4">
