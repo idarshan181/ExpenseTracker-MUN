@@ -1,24 +1,55 @@
 'use client';
 
-import { useSpendingByCategoriesQuery } from '@/hooks/useFinancialAnalytics';
+import { chartColors } from '@/app/data/chartColors';
+import { useSpendingByCategories } from '@/hooks/useAnalytics';
 import { Cell, Legend, Pie, PieChart, ResponsiveContainer } from 'recharts';
+import EmptyState from '../general/EmptyState';
 import { Card, CardContent, CardHeader, CardTitle } from '../ui/card';
 import { ChartContainer, ChartTooltip, ChartTooltipContent } from '../ui/chart';
+import { Skeleton } from '../ui/skeleton';
+
+function getCustomColor(index: number) {
+  // fallback color in HSL
+  const hue = (index * 137) % 360; // Golden angle for variety
+  return `hsl(${hue} 60% 60%)`;
+}
 
 export default function ExpenseDistribution() {
-  const { data: spending, isLoading } = useSpendingByCategoriesQuery();
+  const { data: spending, isLoading } = useSpendingByCategories();
 
   if (isLoading) {
-    return <div>Loading...</div>;
+    return (
+      <Card>
+        <CardHeader className="items-start">
+          <CardTitle className="text-lg font-bold">
+            Expense Distribution
+          </CardTitle>
+        </CardHeader>
+        <CardContent className="flex aspect-square max-h-[300px] w-full items-center justify-center">
+          <Skeleton className="size-[240px] rounded-full" />
+        </CardContent>
+      </Card>
+    );
   }
   if (!spending || spending.length === 0) {
-    return null;
+    return (
+      <Card>
+        <CardHeader className="items-start">
+          <CardTitle className="text-lg font-bold">
+            Expense Distribution
+          </CardTitle>
+        </CardHeader>
+        <CardContent className="flex h-[300px] items-center justify-center text-muted-foreground">
+          <EmptyState message="No expense data available for this period." />
+        </CardContent>
+      </Card>
+    );
   }
 
-  const formattedData = spending.map((entry: any) => ({
+  const formattedData = spending.map((entry: { category: any; amount: any }, index: number) => ({
     name: entry.category,
     value: entry.amount,
-    fill: getRandomColor(),
+    fill: chartColors[index] || getCustomColor(index),
   }));
 
   return (
@@ -59,13 +90,4 @@ export default function ExpenseDistribution() {
       </CardContent>
     </Card>
   );
-}
-
-function getRandomColor() {
-  const letters = '0123456789ABCDEF';
-  let color = '#';
-  for (let i = 0; i < 6; i++) {
-    color += letters[Math.floor(Math.random() * 16)];
-  }
-  return color;
 }
