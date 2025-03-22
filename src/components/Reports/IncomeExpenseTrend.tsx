@@ -1,6 +1,6 @@
 'use client';
 
-import { useSpendingTrendQuery } from '@/hooks/useSpendingTrend';
+import { useIncomeExpenseTrend } from '@/hooks/useAnalytics';
 import {
   CartesianGrid,
   Legend,
@@ -15,7 +15,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '../ui/card';
 import { ChartContainer } from '../ui/chart';
 
 export default function IncomeExpenseTrend() {
-  const { data: trend, isLoading } = useSpendingTrendQuery();
+  const { data: trend, isLoading } = useIncomeExpenseTrend();
 
   if (isLoading) {
     return <div>Loading...</div>;
