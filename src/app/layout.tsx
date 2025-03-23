@@ -4,6 +4,7 @@ import { metadata } from '@/app/utils/metadata';
 import Providers from '@/components/general/Providers';
 import { Toaster } from '@/components/ui/sonner';
 import { Analytics } from '@vercel/analytics/next';
+import { SpeedInsights } from '@vercel/speed-insights/next';
 import { Geist, Geist_Mono } from 'next/font/google';
 import './globals.css';
 
@@ -64,6 +65,7 @@ export default function RootLayout({
           {children}
           <Toaster richColors closeButton />
           <Analytics />
+          <SpeedInsights />
         </Providers>
       </body>
     </html>
