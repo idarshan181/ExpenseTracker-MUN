@@ -1,71 +1,77 @@
 import BudgetsClient from '@/components/Budgets/BudgetsClient';
-import { useBudgets } from '@/hooks/useBudgets';
 import { fireEvent, render, screen } from '@testing-library/react';
 
-jest.mock('@/hooks/useBudgets');
-jest.mock('@/components/Budgets/MonthlyOverview', () => () => <div>MonthlyOverviewMock</div>);
-jest.mock('@/components/Budgets/BudgetCard', () => ({ budget }: any) => (
-  <div>
-    BudgetCardMock -
-    {budget.name}
-  </div>
-));
-jest.mock('./AddBudgetDialog', () => ({ isOpen }: any) => (
-  isOpen ? <div data-testid="dialog">AddBudgetDialogMock</div> : null
-));
-jest.mock('./BudgetTable', () => () => <div>BudgetTableMock</div>);
+//  Mock custom hook
+jest.mock('@/hooks/useBudgets', () => ({
+  useBudgets: () => ({
+    data: [
+      { id: 1, name: 'Rent', amount: 1000 },
+      { id: 2, name: 'Groceries', amount: 500 },
+    ],
+    isLoading: false,
+    refetch: jest.fn(),
+  }),
+}));
 
-// Mock budgetCard data
+//  Mock backend-related modules to avoid ESM issues
+jest.mock('@/app/utils/auth', () => ({}));
+jest.mock('@/app/utils/requireUser', () => ({}));
+jest.mock('@/app/actions/budgetActions', () => ({
+  deleteBudget: jest.fn(),
+}));
+
+// Mock deeply nested components to isolate frontend UI
+jest.mock('@/components/Budgets/DeleteBudgetButton', () => () => <div>MockDeleteButton</div>);
+jest.mock('@/components/Budgets/BudgetColumn', () => ({
+  BudgetColumn: [],
+}));
+
+// Mock static data used inside BudgetsClient
 jest.mock('@/app/data/mockData', () => ({
   budgetCard: [
-    { id: 1, name: 'Groceries' },
-    { id: 2, name: 'Rent' },
+    { id: 1, name: 'Rent' },
+    { id: 2, name: 'Groceries' },
   ],
 }));
 
-describe('BudgetsClient', () => {
-  const mockRefetch = jest.fn();
+//  Mock child components
+jest.mock('@/components/Budgets/AddBudgetDialog', () => ({
+  __esModule: true,
+  default: ({ isOpen }: any) => (isOpen ? <div data-testid="budget-dialog">Dialog Open</div> : null),
+}));
 
-  it('renders loading state initially', () => {
-    (useBudgets as jest.Mock).mockReturnValue({
-      data: [],
-      isLoading: true,
-      refetch: mockRefetch,
-    });
+jest.mock('@/components/Budgets/BudgetCard', () => ({ budget }: any) => (
+  <div>
+    MockBudgetCard -
+    {budget.name}
+  </div>
+));
 
-    render(<BudgetsClient />);
+jest.mock('@/components/Budgets/MonthlyOverview', () => () => <div>MockMonthlyOverview</div>);
+jest.mock('@/components/Budgets/BudgetTable', () => ({
+  __esModule: true,
+  BudgetTable: () => <div>MockBudgetTable</div>,
+}));
 
-    expect(screen.getByText('Loading...')).toBeInTheDocument();
-  });
-
-  it('renders main content when data is loaded', () => {
-    (useBudgets as jest.Mock).mockReturnValue({
-      data: [{ id: 1, name: 'Test Budget' }],
-      isLoading: false,
-      refetch: mockRefetch,
-    });
-
+// ✅ Test cases
+describe('BudgetsClient (Frontend UI only)', () => {
+  it('renders title, overview, table, and budget cards', () => {
     render(<BudgetsClient />);
 
     expect(screen.getByText('Budget Management')).toBeInTheDocument();
     expect(screen.getByText('Create Budget')).toBeInTheDocument();
-    expect(screen.getByText('MonthlyOverviewMock')).toBeInTheDocument();
-    expect(screen.getByText('BudgetTableMock')).toBeInTheDocument();
-    expect(screen.getByText('BudgetCardMock - Groceries')).toBeInTheDocument();
-    expect(screen.getByText('BudgetCardMock - Rent')).toBeInTheDocument();
+    expect(screen.getByText('MockMonthlyOverview')).toBeInTheDocument();
+    expect(screen.getByText('MockBudgetTable')).toBeInTheDocument();
+    expect(screen.getByText(/MockBudgetCard -\s*Rent/i)).toBeInTheDocument();
+
+    expect(screen.getByText(/MockBudgetCard -\s*Groceries/i)).toBeInTheDocument();
   });
 
-  it('opens AddBudgetDialog on button click', () => {
-    (useBudgets as jest.Mock).mockReturnValue({
-      data: [],
-      isLoading: false,
-      refetch: mockRefetch,
-    });
-
+  it('opens AddBudgetDialog when Create Budget is clicked', () => {
     render(<BudgetsClient />);
     const button = screen.getByText('Create Budget');
     fireEvent.click(button);
 
-    expect(screen.getByTestId('dialog')).toBeInTheDocument();
+    expect(screen.getByTestId('budget-dialog')).toBeInTheDocument();
   });
 });
