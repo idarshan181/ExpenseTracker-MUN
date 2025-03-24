@@ -1,10 +1,8 @@
-/* eslint-disable no-console */
 'use client';
 
 import MonthlyOverview from '@/components/Budgets/MonthlyOverview';
 
 import { Button } from '@/components/ui/button';
-import { useSpendingByCategories } from '@/hooks/useAnalytics';
 import { useBudgets } from '@/hooks/useBudgets';
 import { useTransactions } from '@/hooks/useTransactions';
 import { BudgetCardType } from '@/types/budgets';
@@ -19,7 +17,6 @@ export default function BudgetsClient() {
   // const monthlyOverview = { totalBudget: 2800, totalSpent: 2260, remaining: 540, activeBudgets: 5, exceededBudgets: 1, nearLimitBudgets: 2 };
   const { data: budgets, isLoading, refetch } = useBudgets();
   const { data: transactions } = useTransactions();
-  const { data: expenseCategory } = useSpendingByCategories();
 
   const [isDialogOpen, setIsDialogOpen] = useState(false);
 
@@ -109,8 +106,6 @@ export default function BudgetsClient() {
   if (isLoading) {
     return <div>Loading...</div>;
   }
-
-  console.log('all data', { budgets, useTransactions, expenseCategory });
 
   return (
     <div className="space-y-6">
