@@ -1,10 +1,25 @@
 import { formatCurrency } from '@/app/utils/formatCurrency';
 import { cn } from '@/lib/utils';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../ui/card';
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from '../ui/card';
 import { Progress } from '../ui/progress';
 
 interface BudgetCardProps {
-  budget: { category: string; spent: number; limit: number; transactions: number; remaining: number };
+  budget: {
+    category: { id: string; name: string };
+    spent: number;
+    limit: number;
+    transactions: number;
+    remaining: number;
+    amount: number;
+    categoryId: string;
+
+  };
 }
 
 export default function BudgetCard({ budget }: BudgetCardProps) {
@@ -12,7 +27,7 @@ export default function BudgetCard({ budget }: BudgetCardProps) {
   return (
     <Card>
       <CardHeader>
-        <CardTitle>{budget.category}</CardTitle>
+        <CardTitle>{budget.category.name}</CardTitle>
         <CardDescription>
           {budget.transactions}
           {' '}
@@ -44,11 +59,20 @@ export default function BudgetCard({ budget }: BudgetCardProps) {
           <div className="flex justify-between">
             <div>
               <p className="text-sm text-muted-foreground">Spent</p>
-              <p className={cn('text-sm font-bold')}>{formatCurrency('CAD', budget.spent)}</p>
+              <p className={cn('text-sm font-bold')}>
+                {formatCurrency('CAD', budget.spent)}
+              </p>
             </div>
             <div>
               <p className="text-sm text-muted-foreground">Remaining</p>
-              <p className={cn('text-sm text-end font-bold', budget.remaining < 0 ? 'text-red-500' : 'text-green-500')}>{formatCurrency('CAD', budget.remaining)}</p>
+              <p
+                className={cn(
+                  'text-sm text-end font-bold',
+                  budget.remaining < 0 ? 'text-red-500' : 'text-green-500',
+                )}
+              >
+                {formatCurrency('CAD', budget.remaining)}
+              </p>
             </div>
           </div>
         </div>

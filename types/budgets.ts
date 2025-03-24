@@ -13,3 +13,15 @@ export type Budget = {
   createdAt: string;
   updatedAt: string;
 };
+
+export type BudgetCardType = {
+  id: string;
+  category: { id: string; name: string };
+  limit: number;
+  spent: number;
+  remaining: number;
+  status: 'on_track' | 'warning' | 'exceeded';
+  transactions: number;
+  amount: number;
+  categoryId: string;
+};
