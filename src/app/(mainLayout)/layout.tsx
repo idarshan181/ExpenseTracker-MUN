@@ -21,7 +21,7 @@ export default async function MainLayout({
   const session = await auth();
 
   return (
-    <SessionProvider>
+    <SessionProvider session={session}>
       <SidebarProvider className="">
         {session
           ? (
