@@ -94,7 +94,7 @@ export default function BudgetsClient() {
         id: budget.id,
         category: budget.category,
         limit: budgetAmount,
-        amount: budgetAmount, // ✅ Add this line
+        amount: budgetAmount, //
         spent,
         remaining,
         status,

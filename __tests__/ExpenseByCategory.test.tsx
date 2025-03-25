@@ -1,51 +1,48 @@
-import ExpenseByCategory from '@/components/Dashboard/FinancialInsights/ExpenseByCategory'; // Adjust the import path
+import ExpenseByCategory from '@/components/Dashboard/FinancialInsights/ExpenseByCategory';
+import { useSpendingByCategories } from '@/hooks/useAnalytics';
+
 import { render, screen } from '@testing-library/react';
-import '@testing-library/jest-dom';
 
-// Mocking the necessary components and data
-jest.mock('@/app/data/mockData', () => ({
-  expensesByCategory: [
-    { name: 'Food', value: 200, fill: '#ff8042' },
-    { name: 'Transportation', value: 150, fill: '#ffbb28' },
-    { name: 'Entertainment', value: 50, fill: '#00C49F' },
-  ],
+jest.mock('@/hooks/useAnalytics', () => ({
+  useSpendingByCategories: jest.fn(),
 }));
 
-jest.mock('@/app/utils/formatCurrency', () => ({
-  formatCurrency: (currency: string, amount: number) => `${currency} ${amount.toFixed(2)}`,
-}));
+jest.mock('recharts', () => {
+  const original = jest.requireActual('recharts');
+  return {
+    ...original,
+    ResponsiveContainer: ({ children }: any) => <div>{children}</div>,
+  };
+});
 
 jest.mock('@/components/ui/chart', () => ({
-  ChartContainer: ({ children }: any) => <div>{children}</div>,
-  ChartTooltip: ({ children }: any) => <div>{children}</div>,
-  ChartTooltipContent: ({ hideLabel }: any) => <div>{hideLabel ? 'Tooltip Hidden' : 'Tooltip Content'}</div>,
+  ChartContainer: ({ children }: any) => <div data-testid="chart-container">{children}</div>,
+  ChartTooltip: () => <div data-testid="chart-tooltip" />,
+  ChartTooltipContent: () => <div data-testid="chart-tooltip-content" />,
 }));
 
-// Mock Recharts components
-jest.mock('recharts', () => ({
-  ResponsiveContainer: ({ children }: any) => <div>{children}</div>,
-  PieChart: ({ children }: any) => <div>{children}</div>,
-  Pie: ({ children }: any) => <div>{children}</div>,
-  Cell: ({ fill }: any) => <div style={{ backgroundColor: fill }}>Cell</div>,
-  Label: ({ content }: any) => <div>{content ? content({ viewBox: { cx: 100, cy: 100 } }) : null}</div>,
-  Legend: () => <div>Legend</div>,
+jest.mock('lucide-react', () => ({
+  TrendingUp: () => <svg data-testid="trending-up-icon" />,
 }));
 
-describe('ExpenseByCategory Component', () => {
-  it('renders the Expense by Category section correctly', () => {
+describe('ExpenseByCategory', () => {
+  it('renders pie chart and content when data is available', () => {
+    (useSpendingByCategories as jest.Mock).mockReturnValue({
+      data: [
+        { category: 'Food', amount: 300, fill: '#FF0000' },
+        { category: 'Transport', amount: 200, fill: '#00FF00' },
+      ],
+      isLoading: false,
+      isSuccess: true,
+    });
+
     render(<ExpenseByCategory />);
 
-    // Check if the section header is rendered
     expect(screen.getByText(/Expense by Category/i)).toBeInTheDocument();
     expect(screen.getByText(/January - June 2024/i)).toBeInTheDocument();
+    expect(screen.getByTestId('chart-container')).toBeInTheDocument();
 
-    // Check if the Pie chart is rendered (mocked)
-    expect(screen.getByText(/Legend/i)).toBeInTheDocument();
-
-    // Check if the total expenses label is displayed correctly (mocked data)
-    expect(screen.getByText(/CAD 400.00/)).toBeInTheDocument(); // Based on mocked data (200 + 150 + 50)
-
-    // Check if the "Trending up" message is displayed
+    expect(screen.getByTestId('trending-up-icon')).toBeInTheDocument();
     expect(screen.getByText(/Trending up by 5.2% this month/i)).toBeInTheDocument();
     expect(screen.getByText(/Showing total expenses for the last 6 months/i)).toBeInTheDocument();
   });

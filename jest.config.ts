@@ -31,9 +31,8 @@ const customJestConfig = {
   },
 
   // Ignore transformation for some node_modules if required
-  transformIgnorePatterns: [
-    '/node_modules/(?!@auth|@some-other-esm-module)', // Handle specific modules that need to be transformed
-  ],
+  transformIgnorePatterns: ['/node_modules/(?!(@auth|@prisma|lodash-es)/)'],
+
 };
 
 export default createJestConfig(customJestConfig);
