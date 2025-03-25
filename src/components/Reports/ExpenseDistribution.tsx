@@ -46,11 +46,13 @@ export default function ExpenseDistribution() {
     );
   }
 
-  const formattedData = spending.map((entry: { category: any; amount: any }, index: number) => ({
-    name: entry.category,
-    value: entry.amount,
-    fill: chartColors[index] || getCustomColor(index),
-  }));
+  const formattedData = spending.map(
+    (entry: { category: any; amount: any }, index: number) => ({
+      name: entry.category,
+      value: entry.amount,
+      fill: chartColors[index] || getCustomColor(index),
+    }),
+  );
 
   return (
     <Card>
