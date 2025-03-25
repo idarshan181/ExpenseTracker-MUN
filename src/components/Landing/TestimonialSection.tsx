@@ -43,6 +43,7 @@ const TestimonialsSection = () => {
         <div className="grid grid-cols-1 gap-8 md:grid-cols-3">
           {testimonials.map((testimonial, index) => (
             <AnimateInView
+              // eslint-disable-next-line react/no-array-index-key
               key={index}
               animation="fade-up"
               delay={testimonial.delay}
@@ -74,6 +75,7 @@ const TestimonialsSection = () => {
             <div className="flex items-center justify-center space-x-1">
               {[...Array.from({ length: 5 })].map((_, i) => (
                 <svg
+                  // eslint-disable-next-line react/no-array-index-key
                   key={i}
                   className="size-5 text-primary"
                   xmlns="http://www.w3.org/2000/svg"

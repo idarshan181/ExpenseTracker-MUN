@@ -3,12 +3,10 @@ import { useSpendingByCategories } from '@/hooks/useAnalytics';
 
 import { render, screen } from '@testing-library/react';
 
-// ✅ MOCK the hook module directly
 jest.mock('@/hooks/useAnalytics', () => ({
   useSpendingByCategories: jest.fn(),
 }));
 
-// ✅ Mock other necessary modules
 jest.mock('recharts', () => {
   const original = jest.requireActual('recharts');
   return {
@@ -29,7 +27,6 @@ jest.mock('lucide-react', () => ({
 
 describe('ExpenseByCategory', () => {
   it('renders pie chart and content when data is available', () => {
-    // ✅ Properly mock the hook return value
     (useSpendingByCategories as jest.Mock).mockReturnValue({
       data: [
         { category: 'Food', amount: 300, fill: '#FF0000' },
