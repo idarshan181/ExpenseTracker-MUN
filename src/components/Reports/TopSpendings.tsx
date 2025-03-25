@@ -22,7 +22,10 @@ export default function TopSpendings() {
         ? (
             <CardContent className="space-y-4">
               {[1, 2, 3].map(i => (
-                <div key={i} className="flex items-center justify-between space-x-4">
+                <div
+                  key={i}
+                  className="flex items-center justify-between space-x-4"
+                >
                   <div className="flex items-center space-x-4">
                     <Skeleton className="size-12 rounded-full" />
                     <div className="space-y-2">
@@ -66,9 +69,7 @@ export default function TopSpendings() {
                       </p>
                       <p
                         className={`flex items-center justify-end text-sm ${
-                          category.percentage > 50
-                            ? 'text-red-500'
-                            : 'text-green-500'
+                          category.percentage > 50 ? 'text-red-500' : 'text-green-500'
                         }`}
                       >
                         {category.percentage > 50
