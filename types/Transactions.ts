@@ -8,4 +8,5 @@ export type Transaction = {
   amount: number;
   source: string;
   status: 'completed' | 'pending' | 'failed';
+  transactionType: string;
 };

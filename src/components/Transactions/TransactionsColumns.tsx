@@ -73,10 +73,12 @@ export const TransactionColumns: ColumnDef<Transaction>[] = [
     ),
     cell: ({ row }) => {
       const amount = Number(row.getValue('amount'));
+      const isExpense = row.original.transactionType === 'expense';
+
       return (
         <div className={cn(
           'font-medium',
-          amount >= 0 ? 'text-green-600' : 'text-red-600',
+          isExpense || amount < 0 ? 'text-red-600' : 'text-green-600',
         )}
         >
           {formatCurrency('CAD', amount)}
