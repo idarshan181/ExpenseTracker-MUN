@@ -29,10 +29,12 @@ export const getTransactions = async (limit?: number) => {
 
     const { data } = await response.json();
 
-    const formattedData = data.map((transaction: any) => ({
-      ...transaction,
-      amount: Number.parseFloat(transaction.amount), // Convert amount to number
-    }));
+    const formattedData = data
+      .filter((transaction: any) => transaction.isActive === true)
+      .map((transaction: any) => ({
+        ...transaction,
+        amount: Number.parseFloat(transaction.amount),
+      }));
 
     return formattedData;
   } catch (error) {
