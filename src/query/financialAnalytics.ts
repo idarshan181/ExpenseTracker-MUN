@@ -13,7 +13,7 @@ export const getSpendingsQuery = () =>
     queryFn: fetchSpendingByCategory,
     staleTime: 86400000,
     retry: 1,
-    refetchOnMount: false,
+    refetchOnMount: true,
     refetchOnReconnect: false,
     refetchOnWindowFocus: false,
   });
@@ -23,7 +23,7 @@ export const monthlySummaryQuery = (month?: string) => ({
   queryFn: async () => await fetchMonthlySummary(month),
   staleTime: 86400000,
   retry: 1,
-  refetchOnMount: false,
+  refetchOnMount: true,
   refetchOnReconnect: false,
   refetchOnWindowFocus: false,
 });
@@ -33,7 +33,7 @@ export const overallSummaryQuery = () => ({
   queryFn: fetchOverallSummary,
   staleTime: 86400000,
   retry: 1,
-  refetchOnMount: false,
+  refetchOnMount: true,
   refetchOnReconnect: false,
   refetchOnWindowFocus: false,
 });
@@ -43,7 +43,7 @@ export const getTopSpendingByCategoryQuery = () => ({
   queryFn: fetchTopSpendingByCategory,
   staleTime: 86400000,
   retry: 1,
-  refetchOnMount: false,
+  refetchOnMount: true,
   refetchOnReconnect: false,
   refetchOnWindowFocus: false,
 });
@@ -53,7 +53,7 @@ export const getIncomeExpenseTrendQuery = () => ({
   queryFn: fetchIncomeExpenseTrend,
   staleTime: 86400000,
   retry: 1,
-  refetchOnMount: false,
+  refetchOnMount: true,
   refetchOnReconnect: false,
   refetchOnWindowFocus: false,
 });
