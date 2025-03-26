@@ -146,6 +146,11 @@ export default function AddTransactionForm({
       await queryClient.invalidateQueries({ queryKey: ['transactions'] });
       await queryClient.refetchQueries({ queryKey: ['transactions'] });
 
+      await queryClient.invalidateQueries({ queryKey: ['spendingByCategory'] });
+      await queryClient.refetchQueries({ queryKey: ['spendingByCategory'] });
+      await queryClient.invalidateQueries({ queryKey: ['topSpendingByCategory'] });
+      await queryClient.refetchQueries({ queryKey: ['topSpendingByCategory'] });
+
       form.reset();
 
       if (onSuccess) {

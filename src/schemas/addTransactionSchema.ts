@@ -29,9 +29,7 @@ export const transactionSchema = z.object({
     .refine(date => !Number.isNaN(Date.parse(date)), { message: 'Invalid date format' }) // Ensures valid ISO date
     .refine(date => new Date(date) <= new Date(), { message: 'Transaction date cannot be in the future' }),
   description: z.string().optional(),
-  attachmentUrl: z
-    .union([z.string().url('Attachment URL must be a valid URL'), z.literal(null)])
-    .optional(),
+  attachmentUrl: z.string().optional(),
 });
 
 export type typeAddTransaction = z.infer<typeof transactionSchema> & {

@@ -34,22 +34,22 @@ export default function Summary() {
       <ReportCard
         title="Total Income"
         amount={summary.totalIncome}
-        previousAmount={27500}
-        percentage={8.2}
+        // previousAmount={27500}
+        // percentage={8.2}
         type="income"
       />
       <ReportCard
         title="Total Expenses"
         amount={summary.totalExpense}
-        previousAmount={20300}
-        percentage={3.1}
+        // previousAmount={20300}
+        // percentage={3.1}
         type="expense"
       />
       <ReportCard
         title="Net Savings"
         amount={summary.balance}
-        previousAmount={8900}
-        percentage={12.5}
+        // previousAmount={8900}
+        // percentage={12.5}
         type="savings"
       />
     </div>
